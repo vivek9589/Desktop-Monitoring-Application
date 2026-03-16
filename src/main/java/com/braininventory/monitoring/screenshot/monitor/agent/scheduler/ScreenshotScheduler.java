@@ -2,7 +2,8 @@ package com.braininventory.monitoring.screenshot.monitor.agent.scheduler;
 
 
 import com.braininventory.monitoring.screenshot.monitor.agent.capture.ScreenCaptureService;
-import com.braininventory.monitoring.screenshot.monitor.agent.config.AppConfig;
+
+import com.braininventory.monitoring.screenshot.monitor.agent.config.AgentConfig;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class ScreenshotScheduler {
 
     private final ScreenCaptureService captureService;
-    private final AppConfig config;
+    private final AgentConfig agentConfig;
 
     public ScreenshotScheduler(ScreenCaptureService captureService,
-                               AppConfig config) {
+                               AgentConfig agentConfig) {
         this.captureService = captureService;
-        this.config = config;
+        this.agentConfig = agentConfig;
     }
 
     @Scheduled(fixedRateString = "#{${screenshot.interval.minutes} * 60000}")
