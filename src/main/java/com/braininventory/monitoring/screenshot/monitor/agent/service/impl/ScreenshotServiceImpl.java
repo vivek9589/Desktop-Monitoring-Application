@@ -3,53 +3,58 @@ package com.braininventory.monitoring.screenshot.monitor.agent.service.impl;
 import com.braininventory.monitoring.screenshot.monitor.agent.dto.request.ScreenshotUploadRequest;
 import com.braininventory.monitoring.screenshot.monitor.agent.dto.response.ScreenshotResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.entity.Screenshot;
+import com.braininventory.monitoring.screenshot.monitor.agent.exception.ScreenshotUploadException;
 import com.braininventory.monitoring.screenshot.monitor.agent.repository.ScreenshotRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.service.CloudinaryService;
 import com.braininventory.monitoring.screenshot.monitor.agent.service.ScreenshotService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ScreenshotServiceImpl implements ScreenshotService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScreenshotServiceImpl.class);
+    private final ScreenshotRepository screenshotRepository;
+    private final CloudinaryService cloudinaryService;
 
-    @Autowired
-    private ScreenshotRepository screenshotRepository;
-
-    @Autowired
-    private CloudinaryService cloudinaryService;
-
-
+    /**
+     * Uploads a screenshot file to Cloudinary and saves metadata in DB.
+     *
+     * @param file    the screenshot file
+     * @param request metadata about the screenshot (agentId, timestamp)
+     * @return ScreenshotResponse containing saved screenshot details
+     */
     @Override
     public ScreenshotResponse uploadScreenshot(MultipartFile file, ScreenshotUploadRequest request) {
+        String agentId = request.getAgentId();
+        log.info("Uploading screenshot for agent: {}", agentId);
+
         try {
-            logger.info("Uploading screenshot for agent: {}", request.getAgentId());
-
-            // Upload to Cloudinary
+            // Step 1: Upload file to Cloudinary
             String fileUrl = cloudinaryService.uploadFile(file);
+            log.debug("Screenshot uploaded to Cloudinary. URL={}", fileUrl);
 
-            // Save metadata in DB
+            // Step 2: Save metadata in DB
             Screenshot screenshot = Screenshot.builder()
-                    .agentId(request.getAgentId())
+                    .agentId(agentId)
                     .filePath(fileUrl)
                     .timestamp(request.getTimestamp())
                     .createdAt(LocalDateTime.now())
                     .build();
 
             Screenshot saved = screenshotRepository.save(screenshot);
+            log.info("Screenshot saved in DB with id={} for agent={}", saved.getId(), agentId);
 
+            // Step 3: Build response DTO
             return ScreenshotResponse.builder()
                     .id(saved.getId())
                     .agentId(saved.getAgentId())
@@ -59,14 +64,23 @@ public class ScreenshotServiceImpl implements ScreenshotService {
                     .build();
 
         } catch (Exception e) {
-            logger.error("Error uploading screenshot", e);
-            throw new RuntimeException("Screenshot upload failed");
+            log.error("Error uploading screenshot for agent={}", agentId, e);
+            throw new ScreenshotUploadException("Screenshot upload failed for agent " + agentId, e);
         }
     }
 
+    /**
+     * Fetches screenshots for a given agent within a date range.
+     *
+     * @param agentId   agent identifier
+     * @param startDate optional start date
+     * @param endDate   optional end date
+     * @param pageable  pagination info
+     * @return Page of ScreenshotResponse
+     */
     @Override
     public Page<ScreenshotResponse> getScreenshots(String agentId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        logger.info("Fetching screenshots for agent: {}", agentId);
+        log.info("Fetching screenshots for agent: {}", agentId);
 
         LocalDateTime start = startDate != null ? startDate.atStartOfDay() : LocalDateTime.MIN;
         LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : LocalDateTime.now();

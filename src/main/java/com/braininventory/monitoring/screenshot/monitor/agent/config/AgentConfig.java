@@ -1,12 +1,10 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.config;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class AppConfig {
+public class AgentConfig {
 
     @Value("${screenshot.interval.minutes}")
     private int screenshotIntervalMinutes;

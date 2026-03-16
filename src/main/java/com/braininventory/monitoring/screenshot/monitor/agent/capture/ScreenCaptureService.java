@@ -1,7 +1,8 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.capture;
 
 
-import com.braininventory.monitoring.screenshot.monitor.agent.config.AppConfig;
+
+import com.braininventory.monitoring.screenshot.monitor.agent.config.AgentConfig;
 import com.braininventory.monitoring.screenshot.monitor.agent.storage.ScreenshotStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +29,17 @@ public class ScreenCaptureService {
 
     private static final Logger logger = LoggerFactory.getLogger(ScreenCaptureService.class);
 
-    private final AppConfig config;
+    private final AgentConfig agentConfig;
     private final ScreenshotStorageService storageService;
     private final RestTemplate restTemplate;
 
     @Value("${backend.api.screenshot-upload-url}")
     private String backendUrl;
 
-    public ScreenCaptureService(AppConfig config,
+    public ScreenCaptureService(AgentConfig agentConfig,
                                 ScreenshotStorageService storageService,
                                 RestTemplate restTemplate) {
-        this.config = config;
+        this.agentConfig = agentConfig;
         this.storageService = storageService;
         this.restTemplate = restTemplate;
     }
@@ -54,7 +55,7 @@ public class ScreenCaptureService {
             Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
             BufferedImage screen = robot.createScreenCapture(screenRect);
 
-            File output = storageService.createScreenshotFile(config.getStoragePath());
+            File output = storageService.createScreenshotFile(agentConfig.getStoragePath());
             ImageIO.write(screen, "png", output);
 
             logger.info("Screenshot saved locally: {}", output.getAbsolutePath());
@@ -71,7 +72,7 @@ public class ScreenCaptureService {
         try {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", new FileSystemResource(screenshotFile));
-            body.add("agentId", config.getAgentId());
+            body.add("agentId", agentConfig.getAgentId());
             body.add("timestamp", LocalDateTime.now().toString());
 
             HttpHeaders headers = new HttpHeaders();
