@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/agents")
 @RequiredArgsConstructor
 @Slf4j
-public class AgentController {
+public class  AgentController {
 
     private final AgentService agentService;
 
