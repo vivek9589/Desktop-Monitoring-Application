@@ -12,10 +12,10 @@ import com.braininventory.monitoring.screenshot.monitor.agent.auth.repository.Re
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.repository.UserAuthRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.security.JwtUtil;
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.service.AuthService;
-import com.braininventory.monitoring.screenshot.monitor.agent.exception.EmailAlreadyRegisteredException;
-import com.braininventory.monitoring.screenshot.monitor.agent.exception.InvalidCredentialsException;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.EmailAlreadyRegisteredException;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.InvalidCredentialsException;
 import com.braininventory.monitoring.screenshot.monitor.agent.notification.service.NotificationService;
-import com.braininventory.monitoring.screenshot.monitor.agent.exception.AuthException;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
