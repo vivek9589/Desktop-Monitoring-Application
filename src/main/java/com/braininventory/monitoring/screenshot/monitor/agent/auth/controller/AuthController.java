@@ -7,7 +7,7 @@ import com.braininventory.monitoring.screenshot.monitor.agent.auth.dto.request.R
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.dto.response.LoginResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.dto.response.RegisterResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.auth.service.AuthService;
-import com.braininventory.monitoring.screenshot.monitor.agent.dto.ApiResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
