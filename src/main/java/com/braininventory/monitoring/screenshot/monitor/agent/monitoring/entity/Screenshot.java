@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.entity;
+package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class Screenshot {
     private String filePath;
 
     @Column(name = "timestamp", nullable = false)
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

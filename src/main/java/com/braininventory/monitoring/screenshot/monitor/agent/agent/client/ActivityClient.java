@@ -15,7 +15,7 @@ import java.time.Duration;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ApiClient {
+public class ActivityClient {
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))

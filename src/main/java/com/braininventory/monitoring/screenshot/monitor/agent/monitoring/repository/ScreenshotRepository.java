@@ -1,6 +1,6 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.repository;
+package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.repository;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.entity.Screenshot;
+import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.entity.Screenshot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

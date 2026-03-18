@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request;
+package com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
 @Builder
 public class ScreenshotUploadRequest {
     private String agentId;
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

@@ -1,7 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request.AgentHeartbeatRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response.AgentResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.AgentHeartbeatRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.AgentResponse;
 
 import java.util.List;
 

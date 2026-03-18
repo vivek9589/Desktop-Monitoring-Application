@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.storage;
+package com.braininventory.monitoring.screenshot.monitor.agent.agent.screenshot.storage;
 
 
 import org.springframework.stereotype.Service;

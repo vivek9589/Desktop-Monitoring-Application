@@ -1,12 +1,11 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service;
+package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request.ScreenshotUploadRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response.ScreenshotResponse;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ScreenshotUploadRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ScreenshotResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 

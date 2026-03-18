@@ -1,9 +1,9 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.activity.scheduler;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.agent.activity.ActivityState;
-import com.braininventory.monitoring.screenshot.monitor.agent.agent.client.ApiClient;
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.request.ActivityRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.request.IdleSessionDto;
+import com.braininventory.monitoring.screenshot.monitor.agent.agent.client.ActivityClient;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ActivityRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.IdleSessionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ActivityScheduler {
 
-    private final ApiClient apiClient;
+    private final ActivityClient activityClient;
 
     @Value("${agent.id}")
     private String agentId;
@@ -58,7 +58,7 @@ public class ActivityScheduler {
         try {
             log.info("Sending activity data to backend... Payload={}", request);
 
-            String response = apiClient.send(request);
+            String response = activityClient.send(request);
 
             log.info("Backend Response: {}", response);
 
@@ -72,6 +72,8 @@ public class ActivityScheduler {
     public void checkIdleState() {
         ActivityState.checkIdle();
     }
+
+
 }
 
 

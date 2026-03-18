@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response;
+package com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ public class ScreenshotResponse {
     private Long id;
     private String agentId;
     private String fileUrl;
-    private LocalDateTime timestamp;
+    private String timestamp;
     private LocalDateTime createdAt;
 }

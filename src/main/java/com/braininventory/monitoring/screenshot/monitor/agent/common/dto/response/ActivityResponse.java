@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.response;
+package com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
