@@ -1,6 +1,5 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.impl;
+package com.braininventory.monitoring.screenshot.monitor.agent.agent.screenshot.storage;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.CloudinaryService;
 import com.cloudinary.Cloudinary;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -15,13 +14,13 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class CloudinaryServiceImpl implements CloudinaryService {
+public class CloudinaryService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CloudinaryServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CloudinaryService.class);
 
-    private final Cloudinary cloudinary; // injected via constructor
+    private final Cloudinary cloudinary;
 
-    @Override
+
     public String uploadFile(MultipartFile file) {
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());

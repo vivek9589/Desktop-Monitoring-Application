@@ -1,8 +1,8 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.controller;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.ApiResponse;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request.AgentHeartbeatRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response.AgentResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.AgentHeartbeatRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.AgentResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.AgentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

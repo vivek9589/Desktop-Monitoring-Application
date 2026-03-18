@@ -1,7 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.impl;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.request.ActivityRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.response.ActivityResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ActivityRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ActivityResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.entity.ActivityLog;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.entity.IdleSession;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.enums.ActivityStatus;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 
 @Slf4j

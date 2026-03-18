@@ -1,7 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.controller;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.request.ActivityRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.dto.response.ActivityResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ActivityRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ActivityResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.ActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

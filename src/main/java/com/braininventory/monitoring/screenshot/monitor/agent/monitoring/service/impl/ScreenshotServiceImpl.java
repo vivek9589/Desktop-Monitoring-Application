@@ -1,12 +1,12 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.impl;
+package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.impl;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request.ScreenshotUploadRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response.ScreenshotResponse;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.entity.Screenshot;
+import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.ScreenshotService;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ScreenshotUploadRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ScreenshotResponse;
+import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.entity.Screenshot;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.ScreenshotUploadException;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.repository.ScreenshotRepository;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.CloudinaryService;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.ScreenshotService;
+import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.repository.ScreenshotRepository;
+import com.braininventory.monitoring.screenshot.monitor.agent.agent.screenshot.storage.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

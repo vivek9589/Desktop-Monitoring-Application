@@ -1,9 +1,9 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.screenshot.controller;
+package com.braininventory.monitoring.screenshot.monitor.agent.monitoring.controller;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.ApiResponse;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.request.ScreenshotUploadRequest;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.dto.response.ScreenshotResponse;
-import com.braininventory.monitoring.screenshot.monitor.agent.screenshot.service.ScreenshotService;
+import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.ScreenshotService;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.ScreenshotUploadRequest;
+import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ScreenshotResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,9 +32,9 @@ public class ScreenshotController {
 
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ScreenshotResponse>> uploadScreenshot(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("agentId") String agentId,
-            @RequestParam("timestamp") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timestamp) {
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("agentId") String agentId,
+            @RequestPart("timestamp") String timestamp) {
 
         String requestId = UUID.randomUUID().toString();
         try {
