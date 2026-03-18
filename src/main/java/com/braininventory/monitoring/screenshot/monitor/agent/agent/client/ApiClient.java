@@ -1,40 +1,61 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import org.springframework.stereotype.Component;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import java.time.Duration;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ApiClient {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(5))
+            .build();
 
-    private static final String URL = "http://localhost:9090/api/monitor/activity";
-    private static final String API_KEY = "SECRET_KEY";
+    private final ObjectMapper objectMapper;
 
-    public void send(Object payload) {
+    @Value("${backend.activity.url}")
+    private String url;
+
+    @Value("${backend.api.key}")
+    private String apiKey;
+
+    public String send(Object payload) {
 
         try {
             String json = objectMapper.writeValueAsString(payload);
 
+            log.debug("Sending HTTP Request -> URL: {}, Payload: {}", url, json);
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(URL))
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(10))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + API_KEY)
+                    .header("Authorization", "Bearer " + apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
-            httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =
+                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            log.info("API Response -> Status: {}, Body: {}",
+                    response.statusCode(),
+                    response.body());
+
+            return response.body();
 
         } catch (Exception e) {
-            log.error("Failed to send data", e);
+            log.error("API call failed for payload={}", payload, e);
+            throw new RuntimeException("Failed to send data to backend", e);
         }
     }
 }

@@ -7,11 +7,13 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,17 @@ public class NotificationServiceImpl implements NotificationService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
+    @Value("${app.reset-password.path}")
+    private String resetPasswordPath;
+
     @Override
     public String sendForgetPasswordEmail(String toEmail, String resetToken) {
-        String resetLink = "http://localhost:9090/api/auth/reset-password?token=" + resetToken;
-
         UserAuth user = userAuthRepository.findByEmail(toEmail).orElse(null);
+
+        String resetLink = baseUrl + resetPasswordPath + resetToken;
 
         Context context = new Context();
         context.setVariable("username", user != null ? user.getEmail() : "User");
@@ -40,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(toEmail);
             helper.setSubject("Password Reset Request");
-            helper.setText(body, true); // true = HTML
+            helper.setText(body, true);
             mailSender.send(message);
 
             log.info("Password reset email successfully sent to {}", toEmail);

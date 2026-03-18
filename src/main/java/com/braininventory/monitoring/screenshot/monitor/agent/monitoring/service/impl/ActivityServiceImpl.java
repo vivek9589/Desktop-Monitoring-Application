@@ -31,71 +31,85 @@ public class ActivityServiceImpl implements ActivityService {
 
         log.info("Received activity for agent: {}", request.getAgentId());
 
-        ActivityStatus status = determineStatus(request);
-
-        // Save activity log
+        // 1. Save activity log (ONLY data)
         ActivityLog activityLog = ActivityLog.builder()
                 .agentId(request.getAgentId())
                 .keyboardCount(request.getKeyboardCount())
                 .mouseCount(request.getMouseCount())
-                .status(status)
+                .status(request.isIdle() ? ActivityStatus.IDLE : ActivityStatus.ACTIVE)
                 .timestamp(request.getTimestamp())
                 .createdAt(LocalDateTime.now())
                 .build();
 
         activityRepository.save(activityLog);
 
-        // Handle idle session logic
-        handleIdleSession(request.getAgentId(), status, request.getTimestamp());
+        // 2. Save idle sessions (DIRECT)
+        if (request.getIdleSessions() != null && !request.getIdleSessions().isEmpty()) {
+
+            request.getIdleSessions().forEach(session -> {
+
+                IdleSession entity = IdleSession.builder()
+                        .agentId(request.getAgentId())
+                        .startTime(session.getStartTime())
+                        .endTime(session.getEndTime())
+                        .durationSeconds(session.getDurationSeconds())
+                        .build();
+
+                idleSessionRepository.save(entity);
+            });
+
+            log.info("Saved {} idle sessions", request.getIdleSessions().size());
+        }
 
         return ActivityResponse.builder()
                 .agentId(request.getAgentId())
-                .status(status.name())
+                .status(request.isIdle() ? "IDLE" : "ACTIVE")
                 .timestamp(request.getTimestamp())
                 .build();
     }
 
-    private ActivityStatus determineStatus(ActivityRequest request) {
-        if (request.getKeyboardCount() == 0 && request.getMouseCount() == 0) {
-            return ActivityStatus.IDLE;
-        }
-        return ActivityStatus.ACTIVE;
-    }
 
-    private void handleIdleSession(String agentId, ActivityStatus status, LocalDateTime timestamp) {
-
-        Optional<IdleSession> lastSessionOpt =
-                idleSessionRepository.findTopByAgentIdOrderByStartTimeDesc(agentId);
-
-        if (status == ActivityStatus.IDLE) {
-
-            if (lastSessionOpt.isEmpty() || lastSessionOpt.get().getEndTime() != null) {
-                // Start new idle session
-                IdleSession session = IdleSession.builder()
-                        .agentId(agentId)
-                        .startTime(timestamp)
-                        .build();
-
-                idleSessionRepository.save(session);
-                log.info("Started new idle session for agent {}", agentId);
-            }
-
-        } else {
-
-            if (lastSessionOpt.isPresent() && lastSessionOpt.get().getEndTime() == null) {
-
-                IdleSession session = lastSessionOpt.get();
-                session.setEndTime(timestamp);
-
-                long duration = java.time.Duration.between(
-                        session.getStartTime(), timestamp).getSeconds();
-
-                session.setDurationSeconds(duration);
-
-                idleSessionRepository.save(session);
-
-                log.info("Closed idle session for agent {}, duration: {} sec", agentId, duration);
-            }
-        }
-    }
+//    private ActivityStatus determineStatus(ActivityRequest request) {
+//        if (request.getKeyboardCount() == 0 && request.getMouseCount() == 0) {
+//            return ActivityStatus.IDLE;
+//        }
+//        return ActivityStatus.ACTIVE;
+//    }
+//
+//    private void handleIdleSession(String agentId, ActivityStatus status, LocalDateTime timestamp) {
+//
+//        Optional<IdleSession> lastSessionOpt =
+//                idleSessionRepository.findTopByAgentIdOrderByStartTimeDesc(agentId);
+//
+//        if (status == ActivityStatus.IDLE) {
+//
+//            if (lastSessionOpt.isEmpty() || lastSessionOpt.get().getEndTime() != null) {
+//                // Start new idle session
+//                IdleSession session = IdleSession.builder()
+//                        .agentId(agentId)
+//                        .startTime(timestamp)
+//                        .build();
+//
+//                idleSessionRepository.save(session);
+//                log.info("Started new idle session for agent {}", agentId);
+//            }
+//
+//        } else {
+//
+//            if (lastSessionOpt.isPresent() && lastSessionOpt.get().getEndTime() == null) {
+//
+//                IdleSession session = lastSessionOpt.get();
+//                session.setEndTime(timestamp);
+//
+//                long duration = java.time.Duration.between(
+//                        session.getStartTime(), timestamp).getSeconds();
+//
+//                session.setDurationSeconds(duration);
+//
+//                idleSessionRepository.save(session);
+//
+//                log.info("Closed idle session for agent {}, duration: {} sec", agentId, duration);
+//            }
+//        }
+//    }
 }
