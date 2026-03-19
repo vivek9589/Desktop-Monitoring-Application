@@ -67,7 +67,7 @@ public class ActivityScheduler {
         }
     }
 
-    // ✅ OPTIONAL: Separate scheduler for idle detection (VERY IMPORTANT)
+    // OPTIONAL: Separate scheduler for idle detection (VERY IMPORTANT)
     @Scheduled(fixedRate = 5000)
     public void checkIdleState() {
         ActivityState.checkIdle();
