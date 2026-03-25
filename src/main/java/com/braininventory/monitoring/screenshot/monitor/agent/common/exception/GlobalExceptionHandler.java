@@ -156,4 +156,26 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
+
+
+    /**
+     * Handle custom AgentException.
+     * This is thrown for agent-specific errors in monitoring logic.
+     * Returns a structured ApiResponse with error details and metadata.
+     */
+    @ExceptionHandler(AgentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAgentException(AgentException ex) {
+        logger.error("Agent error occurred: {}", ex.getMessage());
+        String requestId = UUID.randomUUID().toString();
+
+        ApiResponse<Object> response = ApiResponse.error(
+                "AGENT_ERROR",
+                "Agent processing failed",
+                ex.getMessage(),
+                requestId
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
 }

@@ -4,31 +4,20 @@ import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.enums.W
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
- * Entity representing website usage sessions.
+ * Entity representing classification rules for domains.
  */
 @Entity
-@Table(name = "website_usage")
+@Table(name = "website_classification")
 @Data
-public class WebsiteUsage {
+public class WebsiteClassification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
-    private String url;
-
-    private String title;
-
-    @Column(nullable=false)
+    @Column(unique = true, nullable=false)
     private String domain;
-
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private Long duration;
 
     @Enumerated(EnumType.STRING)
     private WebsiteCategory category;
