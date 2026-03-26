@@ -1,10 +1,10 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.screenshot.capture;
 
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AgentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
 
 @Slf4j
 @Component
@@ -12,8 +12,7 @@ public class ScreenCaptureProvider {
 
     public BufferedImage capture() {
         if (GraphicsEnvironment.isHeadless()) {
-            log.warn("Headless environment detected. Skipping capture.");
-            return null;
+            throw new AgentException("Headless environment detected. Cannot capture screen.");
         }
 
         try {
@@ -22,7 +21,7 @@ public class ScreenCaptureProvider {
             return robot.createScreenCapture(screenRect);
         } catch (Exception e) {
             log.error("Failed to capture screen", e);
-            return null;
+            throw new AgentException("Screen capture failed: " + e.getMessage());
         }
     }
 }

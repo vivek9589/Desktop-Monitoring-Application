@@ -8,10 +8,12 @@ import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.enums.A
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.repository.ActivityRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.repository.IdleSessionRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.monitoring.service.ActivityService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
 
 
@@ -26,6 +28,7 @@ public class ActivityServiceImpl implements ActivityService {
     private static final int IDLE_THRESHOLD = 0; // basic phase
 
     @Override
+    @Transactional
     public ActivityResponse trackActivity(ActivityRequest request) {
 
         log.info("Received activity for agent: {}", request.getAgentId());

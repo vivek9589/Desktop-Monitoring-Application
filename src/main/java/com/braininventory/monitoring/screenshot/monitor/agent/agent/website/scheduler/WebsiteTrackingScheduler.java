@@ -6,6 +6,7 @@ import com.braininventory.monitoring.screenshot.monitor.agent.agent.website.stat
 import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AgentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,9 @@ public class WebsiteTrackingScheduler {
     private final BrowserMetadataFetcher metadataFetcher;
     private final WebsiteSessionManager sessionManager;
 
+    @Value("${agent.website.interval:5000}")
+    private long interval;
+
     @Scheduled(fixedDelayString = "${agent.website.interval:5000}")
     public void trackWebsite() {
         try {
@@ -29,7 +33,7 @@ public class WebsiteTrackingScheduler {
             boolean isBrowser = metadata.isBrowser();
 
             String url = normalize(title);
-            log.debug("Tracking -> URL: {}, Browser: {}", url, isBrowser);
+            log.debug("Tracking -> URL: {}, Browser: {}, Interval: {} ms", url, isBrowser, interval);
 
             sessionManager.handle(url, title, isBrowser);
         } catch (Exception ex) {

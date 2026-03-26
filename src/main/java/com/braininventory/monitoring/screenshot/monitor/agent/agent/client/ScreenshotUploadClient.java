@@ -1,63 +1,57 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.client;
 
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AgentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.File;
 import java.time.LocalDateTime;
-
-
-@Component
 @Slf4j
+@Service
 public class ScreenshotUploadClient {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
+    private final String backendUrl;
+    private final String apiKey;
 
-    @Value("${backend.api.screenshot-upload-url}")
-    private String backendUrl;
-
-
-    public ScreenshotUploadClient(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public ScreenshotUploadClient(
+            WebClient.Builder builder,
+            @Value("${app.base-url}") String baseUrl,
+            @Value("${backend.api.screenshot-upload-path}") String path,
+            @Value("${backend.api.key}") String apiKey
+    ) {
+        this.webClient = builder.build();
+        this.backendUrl = baseUrl + path;
+        this.apiKey = apiKey;
     }
 
     public String upload(File file, String agentId) {
-
         try {
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file", new FileSystemResource(file));
-            body.add("agentId", agentId);
-            body.add("timestamp", LocalDateTime.now().toString());
+//            log.info("Uploading screenshot file='{}' to '{}', agentId={}",
+//                    file.getAbsolutePath(), backendUrl, agentId);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            HttpEntity<MultiValueMap<String, Object>> request =
-                    new HttpEntity<>(body, headers);
-
-            log.info("Uploading screenshot -> agentId={}, file={}", agentId, file.getName());
-
-            ResponseEntity<String> response =
-                    restTemplate.postForEntity(backendUrl, request, String.class);
-
-            log.info("Upload success -> Status={}, Body={}",
-                    response.getStatusCode(), response.getBody());
-
-            return response.getBody();
+            return webClient.post()
+                    .uri(backendUrl)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromMultipartData("file", new FileSystemResource(file))
+                            .with("agentId", agentId)
+                            .with("timestamp", LocalDateTime.now().toString()))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
         } catch (Exception e) {
-            log.error("Screenshot upload failed for agentId={}, file={}",
-                    agentId, file.getName(), e);
-            return null;
+            log.error("Screenshot upload failed -> file='{}', agentId={}, backendUrl={}",
+                    file.getAbsolutePath(), agentId, backendUrl, e);
+            throw new AgentException("Screenshot upload failed: " + e.getMessage());
         }
     }
 }

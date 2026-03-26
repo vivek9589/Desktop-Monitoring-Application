@@ -27,7 +27,8 @@ public class AppTrackingScheduler {
     @Value("${agent.id}")
     private String agentId;
 
-    @Scheduled(fixedRate = 5000)
+    // @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelayString = "${agent.app.interval:5000}")
     public void trackApp() {
 
         //  1. Check IDLE (USE YOUR EXISTING LOGIC)

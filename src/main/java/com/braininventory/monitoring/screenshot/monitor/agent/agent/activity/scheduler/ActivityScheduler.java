@@ -24,7 +24,7 @@ public class ActivityScheduler {
     @Value("${agent.id}")
     private String agentId;
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "${agent.tracking.activity-rate-ms:5000}")
     public void sendActivity() {
 
         // 1. Collect data
@@ -68,7 +68,7 @@ public class ActivityScheduler {
     }
 
     // OPTIONAL: Separate scheduler for idle detection (VERY IMPORTANT)
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "${agent.tracking.idle-check-rate-ms:5000}")
     public void checkIdleState() {
         ActivityState.checkIdle();
     }
