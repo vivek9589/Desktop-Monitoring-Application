@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +18,7 @@ public class ApiResponse<T> {
     private ApiError error;
     private Meta meta;
 
-    // Static factory methods
+    // Success factory
     public static <T> ApiResponse<T> success(T data, String requestId) {
         return ApiResponse.<T>builder()
                 .status("success")
@@ -28,10 +27,15 @@ public class ApiResponse<T> {
                 .build();
     }
 
+    // Error factory with multiple arguments
     public static <T> ApiResponse<T> error(String code, String message, String details, String requestId) {
         return ApiResponse.<T>builder()
                 .status("error")
-                .error(new ApiError(code, message, details))
+                .error(ApiError.builder()
+                        .code(code)
+                        .message(message)
+                        .details(details)
+                        .build())
                 .meta(new Meta(requestId, Instant.now().toString()))
                 .build();
     }
