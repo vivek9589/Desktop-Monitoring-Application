@@ -20,30 +20,31 @@ import java.net.http.HttpClient;
 @Component
 public class WebsiteUsageClient extends BaseApiClient {
 
-    private final String backendUrl;
+    private final String finalUrl;
     private final String apiKey;
 
     public WebsiteUsageClient(
             HttpClient httpClient,
             ObjectMapper objectMapper,
-            @Value("${backend.website.url}") String backendUrl,
+            @Value("${app.base-url}") String baseUrl, // Inject the base (http://localhost:9090)
+            @Value("${backend.website.path:/api/website-usage}") String path, // The specific path
             @Value("${backend.api.key}") String apiKey
     ) {
         super(httpClient, objectMapper);
-        this.backendUrl = backendUrl;
+        // Combine them to form: http://localhost:9090/api/website-usage
+        this.finalUrl = baseUrl + path;
         this.apiKey = apiKey;
     }
 
     public void send(WebsiteUsageDto dto) {
         try {
-            log.debug("Sending website usage: {}", dto);
-            post(backendUrl, apiKey, dto);
+            log.debug("Sending website usage to: {}", finalUrl);
+            post(finalUrl, apiKey, dto);
             log.info("Website usage sent successfully for URL: {}", dto.getUrl());
         } catch (AgentException ex) {
             log.warn("Backend rejected website usage: {}", ex.getMessage());
         } catch (Exception ex) {
-            log.error("Failed to send website usage. Will retry later.", ex);
-            // TODO: enqueue dto for retry instead of dropping
+            log.error("Failed to send website usage to {}", finalUrl, ex);
         }
     }
 }

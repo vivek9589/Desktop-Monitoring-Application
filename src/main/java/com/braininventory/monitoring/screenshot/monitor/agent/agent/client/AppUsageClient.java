@@ -1,26 +1,42 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.client;
 
+import com.braininventory.monitoring.screenshot.monitor.agent.agent.core.BaseApiClient;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.AppActivityRequest;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
+import java.net.http.HttpClient;
+
+@Slf4j
 @Component
-@RequiredArgsConstructor
-public class AppUsageClient {
+public class AppUsageClient extends BaseApiClient {
 
-    private final RestTemplate restTemplate;
+    private final String baseUrl;
+    private final String apiKey;
 
-    @Value("${app.base-url}")
-    private  String baseUrl;
+    public AppUsageClient(
+            HttpClient httpClient,
+            ObjectMapper objectMapper,
+            @Value("${app.base-url}") String baseUrl,
+            @Value("${backend.api.key:}") String apiKey) { // Added a default empty string if key isn't provided
+        super(httpClient, objectMapper);
+        this.baseUrl = baseUrl;
+        this.apiKey = apiKey;
+    }
 
+    /**
+     * Sends the app activity session to the backend.
+     * * @param request The activity data payload
+     * @return The response body from the server
+     */
     public String send(AppActivityRequest request) {
+        String url = baseUrl + "/api/app-usage";
 
-        return restTemplate.postForObject(
-                baseUrl + "/api/app-usage",
-                request,
-                String.class
-        );
+        log.debug("Sending app activity for agent: {}", request.getAgentId());
+
+        // Utilizing the 'post' method from BaseApiClient
+        return post(url, apiKey, request);
     }
 }
