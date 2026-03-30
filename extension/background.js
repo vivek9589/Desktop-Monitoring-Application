@@ -1,4 +1,4 @@
-import { CONFIG } from "./config.js";
+import { AGENT_URL, CONFIG } from "./config.js";
 import { log } from "./utils/logger.js";
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
@@ -19,14 +19,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 async function sendTabData(tab) {
   if (!tab?.url) return;
 
-  const payload = {
-    url: tab.url,
-    title: tab.title,
-    timestamp: Date.now()
-  };
+  const payload = { url: tab.url, title: tab.title, timestamp: Date.now() };
 
   try {
-    const response = await fetch(CONFIG.AGENT_URL, {
+    const response = await fetch(AGENT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
