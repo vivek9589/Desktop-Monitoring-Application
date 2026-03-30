@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Component
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class AppTrackingScheduler {
         // 4. If app changed → CLOSE previous session
         if (AppTrackingState.isAppChanged(app)) {
 
-            LocalDateTime endTime = LocalDateTime.now();
+            LocalDateTime endTime = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
 
             long duration = Duration.between(
                     AppTrackingState.getStartTime(),

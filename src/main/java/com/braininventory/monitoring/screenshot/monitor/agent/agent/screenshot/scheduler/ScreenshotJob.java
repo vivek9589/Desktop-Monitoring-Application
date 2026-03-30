@@ -27,7 +27,7 @@ public class ScreenshotJob {
     @Value("${agent.screenshot.storage-path}")
     private String storagePath;
 
-    @Value("${agent.agent-id}")
+    @Value("${agent.id}")
     private String agentId;
 
     @Scheduled(fixedRateString = "#{${agent.screenshot.interval-minutes} * 60000}")

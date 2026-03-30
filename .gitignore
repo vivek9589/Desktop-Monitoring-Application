@@ -35,4 +35,4 @@ build/
 
 # Custom ignore
 screenshots/
-
+.env

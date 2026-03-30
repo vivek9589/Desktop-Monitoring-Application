@@ -48,7 +48,7 @@ public class WebsiteSessionManager {
         currentSession = new WebsiteSession();
         currentSession.setUrl(url);
         currentSession.setTitle(title);
-        currentSession.setStartTime(System.currentTimeMillis());
+        currentSession.setStartTime(WebsiteSession.nowIST());
 
         log.info("Website session STARTED -> {}", url);
     }
@@ -57,10 +57,10 @@ public class WebsiteSessionManager {
         if (currentSession == null) return;
 
         try {
-            currentSession.setEndTime(System.currentTimeMillis());
-            long duration = currentSession.getDuration();
+            currentSession.setEndTime(WebsiteSession.nowIST());
+            long durationSeconds = currentSession.getDurationSeconds();
 
-            if (duration < 1000) {
+            if (durationSeconds < 1) {
                 log.debug("Ignoring short session (<1s) for {}", currentSession.getUrl());
                 currentSession = null;
                 return;
@@ -71,13 +71,13 @@ public class WebsiteSessionManager {
                     .title(currentSession.getTitle())
                     .startTime(currentSession.getStartTime())
                     .endTime(currentSession.getEndTime())
-                    .duration(duration)
+                    .duration(durationSeconds)
                     .build();
 
             websiteUsageClient.send(dto);
 
-            log.info("Website session ENDED [{}] -> {} | Duration: {} ms",
-                    reason, currentSession.getUrl(), duration);
+            log.info("Website session ENDED [{}] -> {} | Duration: {} sec",
+                    reason, currentSession.getUrl(), durationSeconds);
 
         } catch (Exception ex) {
             log.error("Failed to end session", ex);

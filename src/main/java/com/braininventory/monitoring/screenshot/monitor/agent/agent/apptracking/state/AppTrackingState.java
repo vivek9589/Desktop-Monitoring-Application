@@ -4,6 +4,8 @@ package com.braininventory.monitoring.screenshot.monitor.agent.agent.apptracking
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 @Data
 public class AppTrackingState {
@@ -19,7 +21,7 @@ public class AppTrackingState {
     public static void startSession(String app, String title) {
         currentApp = app;
         currentTitle = title;
-        startTime = LocalDateTime.now();
+        startTime = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
     }
 
     public static boolean isAppChanged(String newApp) {
@@ -40,7 +42,7 @@ public class AppTrackingState {
         return currentTitle;
     }
 
-    public static LocalDateTime getStartTime() {
+    public static LocalDateTime   getStartTime() {
         return startTime;
     }
 }
