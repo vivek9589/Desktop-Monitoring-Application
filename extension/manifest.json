@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Activity Tracker",
+  "version": "1.0",
+  "description": "Tracks active tab URL and sends to local agent",
+  "permissions": ["tabs", "activeTab"],
+  "host_permissions": ["http://localhost:9090/*"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

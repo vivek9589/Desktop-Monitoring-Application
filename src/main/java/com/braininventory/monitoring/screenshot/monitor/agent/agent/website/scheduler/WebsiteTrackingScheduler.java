@@ -32,7 +32,9 @@ public class WebsiteTrackingScheduler {
             String title = metadata.title();
             boolean isBrowser = metadata.isBrowser();
 
-            String url = normalize(title);
+            String url = metadata.url() != null
+                    ? metadata.url()
+                    : normalize(title);
             log.debug("Tracking -> URL: {}, Browser: {}, Interval: {} ms", url, isBrowser, interval);
 
             sessionManager.handle(url, title, isBrowser);

@@ -6,5 +6,6 @@ package com.braininventory.monitoring.screenshot.monitor.agent.agent.website.det
 public record BrowserMetadata(
         String app,
         String title,
+        String url,
         boolean isBrowser
 ) {}
