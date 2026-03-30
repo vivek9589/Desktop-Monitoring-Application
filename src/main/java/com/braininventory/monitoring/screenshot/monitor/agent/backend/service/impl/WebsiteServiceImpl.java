@@ -4,9 +4,8 @@ import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request
 import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AgentException;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.util.UrlUtils;
 import com.braininventory.monitoring.screenshot.monitor.agent.backend.entity.WebsiteUsage;
-import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.WebsiteCategory;
+import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.Category;
 import com.braininventory.monitoring.screenshot.monitor.agent.backend.repository.WebsiteRepository;
-import com.braininventory.monitoring.screenshot.monitor.agent.backend.service.WebsiteClassificationService;
 import com.braininventory.monitoring.screenshot.monitor.agent.backend.service.WebsiteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +20,13 @@ import org.springframework.stereotype.Service;
 public class WebsiteServiceImpl implements WebsiteService {
 
     private final WebsiteRepository repository;
-    private final WebsiteClassificationService classificationService;
+    private final WebsiteClassifierImpl classificationService;
 
     @Override
     public void save(WebsiteUsageDto dto) {
         try {
             String domain = normalizeDomain(UrlUtils.extractDomain(dto.getUrl()));
-            WebsiteCategory category = classificationService.classify(domain);
+            Category category = classificationService.classify(domain);
 
             WebsiteUsage entity = new WebsiteUsage();
             entity.setUrl(dto.getUrl());

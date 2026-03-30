@@ -1,6 +1,6 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.backend.enums;
 
-public enum WebsiteCategory {
+public enum Category {
     PRODUCTIVE,
     NEUTRAL,
     UNPRODUCTIVE

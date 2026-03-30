@@ -1,12 +1,8 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.backend.entity;
 
-
+import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.Category;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -47,6 +43,10 @@ public class AppUsageSession implements Serializable {
 
     @Column(name = "duration_seconds")
     private long durationSeconds;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category;
 
     @PrePersist
     @PreUpdate

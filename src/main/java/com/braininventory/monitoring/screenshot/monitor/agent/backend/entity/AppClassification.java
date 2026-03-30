@@ -1,34 +1,21 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.backend.entity;
 
+
 import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
-/**
- * Entity representing website usage sessions.
- */
 @Entity
-@Table(name = "website_usage")
+@Table(name = "app_classification")
 @Data
-public class WebsiteUsage {
+public class AppClassification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
-    private String url;
-
-    private String title;
-
-    @Column(nullable=false)
-    private String domain;
-
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private Long duration;
+    @Column(unique = true, nullable = false)
+    private String appName;
 
     @Enumerated(EnumType.STRING)
     private Category category;

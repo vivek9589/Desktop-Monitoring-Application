@@ -1,6 +1,6 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.backend.entity;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.WebsiteCategory;
+import com.braininventory.monitoring.screenshot.monitor.agent.backend.enums.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,9 +16,9 @@ public class WebsiteClassification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable=false)
+    @Column(unique = true, nullable = false)
     private String domain;
 
     @Enumerated(EnumType.STRING)
-    private WebsiteCategory category;
+    private Category category;
 }
