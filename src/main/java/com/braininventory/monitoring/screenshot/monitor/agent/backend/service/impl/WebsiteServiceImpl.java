@@ -38,7 +38,7 @@ public class WebsiteServiceImpl implements WebsiteService {
             // Directly use LocalDateTime from DTO
             entity.setStartTime(dto.getStartTime());
             entity.setEndTime(dto.getEndTime());
-            entity.setDuration(dto.getDuration()); // already in seconds
+            entity.setDuration(dto.getDuration()); //  in seconds
 
             repository.save(entity);
 
