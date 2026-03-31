@@ -29,6 +29,7 @@ public class WebsiteServiceImpl implements WebsiteService {
             Category category = classificationService.classify(domain);
 
             WebsiteUsage entity = new WebsiteUsage();
+            entity.setAgentId(dto.getAgentId());
             entity.setUrl(dto.getUrl());
             entity.setTitle(dto.getTitle());
             entity.setDomain(domain);
@@ -37,7 +38,7 @@ public class WebsiteServiceImpl implements WebsiteService {
             // Directly use LocalDateTime from DTO
             entity.setStartTime(dto.getStartTime());
             entity.setEndTime(dto.getEndTime());
-            entity.setDuration(dto.getDuration()); //  in seconds
+            entity.setDurationSeconds(dto.getDurationSeconds()); //  in seconds
 
             repository.save(entity);
 

@@ -18,10 +18,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class WebsiteUsageDto {
 
+    private String agentId;
     private String url;
     private String title;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Long duration;            // in seconds
+    private Long durationSeconds;            // in seconds //  private Long durationSeconds;    // ✅ rename for consistency with entity
+
+
 }
