@@ -5,6 +5,7 @@ import com.braininventory.monitoring.screenshot.monitor.agent.agent.client.Websi
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.request.WebsiteUsageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,6 +19,9 @@ public class WebsiteSessionManager {
 
     private final WebsiteUsageClient websiteUsageClient;
     private WebsiteSession currentSession;
+
+    @Value("${agent.id}")
+    private String agentId;
 
     public void handle(String url, String title, boolean isBrowser) {
         try {
@@ -67,11 +71,12 @@ public class WebsiteSessionManager {
             }
 
             WebsiteUsageDto dto = WebsiteUsageDto.builder()
+                    .agentId(this.agentId)
                     .url(currentSession.getUrl())
                     .title(currentSession.getTitle())
                     .startTime(currentSession.getStartTime())
                     .endTime(currentSession.getEndTime())
-                    .duration(durationSeconds)
+                    .durationSeconds(durationSeconds)
                     .build();
 
             websiteUsageClient.send(dto);
