@@ -1,7 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.notification.service.impl;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.auth.entity.UserAuth;
-import com.braininventory.monitoring.screenshot.monitor.agent.auth.repository.UserAuthRepository;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.entity.UserAuth;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.repository.UserAuthRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.notification.service.NotificationService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

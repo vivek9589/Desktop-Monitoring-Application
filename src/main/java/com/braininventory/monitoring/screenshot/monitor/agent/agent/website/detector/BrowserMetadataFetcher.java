@@ -1,7 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.agent.website.detector;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.agent.apptracking.detector.ActiveWindowDetector;
-import com.braininventory.monitoring.screenshot.monitor.agent.backend.service.ActiveTabService;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.service.ActiveTabService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
