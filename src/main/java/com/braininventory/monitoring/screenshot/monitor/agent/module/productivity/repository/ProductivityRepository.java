@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.repository;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.repository;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.entity.AppUsageSession;
 import org.springframework.data.jpa.repository.JpaRepository;

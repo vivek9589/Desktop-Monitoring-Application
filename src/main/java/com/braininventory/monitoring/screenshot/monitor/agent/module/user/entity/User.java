@@ -29,8 +29,8 @@ public class User {
     @Column(unique = true, nullable = false, length = 150)
     private String email;
 
-    @Column(nullable = false)
-    private boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
     @Column(name = "organization_id")
     private UUID organizationId;

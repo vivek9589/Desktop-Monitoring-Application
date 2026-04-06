@@ -1,6 +1,6 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.controller;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.controller;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.service.ProductivityService;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.service.ProductivityService;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.ApiResponse;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ProductivityReportDto;
 import lombok.RequiredArgsConstructor;

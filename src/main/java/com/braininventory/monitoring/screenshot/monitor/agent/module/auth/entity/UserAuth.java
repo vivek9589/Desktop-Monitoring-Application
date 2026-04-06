@@ -30,6 +30,5 @@ public class UserAuth {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Column(nullable = false)
-    private boolean isActive = true;
+
 }
