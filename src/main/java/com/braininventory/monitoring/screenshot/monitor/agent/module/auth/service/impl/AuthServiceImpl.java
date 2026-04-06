@@ -17,15 +17,13 @@ import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.E
 import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.InvalidCredentialsException;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.user.repository.UserRepository;
-import com.braininventory.monitoring.screenshot.monitor.agent.notification.service.NotificationService;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.notification.service.NotificationService;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.AuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

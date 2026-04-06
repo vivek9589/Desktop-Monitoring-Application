@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.notification.service;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.notification.service;
 
 public interface NotificationService {
 
