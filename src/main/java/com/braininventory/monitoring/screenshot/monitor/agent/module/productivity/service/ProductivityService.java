@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.service;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.service;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ProductivityReportDto;
 

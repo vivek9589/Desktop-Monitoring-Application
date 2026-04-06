@@ -1,6 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.module.auth.service.impl;
 
 
+import com.braininventory.monitoring.screenshot.monitor.agent.common.exception.InvalidRoleException;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.dto.request.LoginRequest;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.dto.request.RegisterRequest;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.dto.response.LoginResponse;
@@ -27,6 +28,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,38 +45,53 @@ public class AuthServiceImpl implements AuthService {
     private final NotificationService notificationService;
 
     // ================= REGISTER =================
+    @Transactional
     @Override
     public RegisterResponse register(RegisterRequest request) {
-
+        // Check for duplicate email
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyRegisteredException("Email already exists");
         }
 
-        // Create User
+        // Determine role: default to EMPLOYEE if not provided
+        Role role;
+        if (request.getRole() == null || request.getRole().isBlank()) {
+            role = Role.EMPLOYEE;
+        } else {
+            try {
+                role = Role.valueOf(request.getRole().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidRoleException("Role must be ADMIN or EMPLOYEE");
+            }
+        }
+
+        // Create User entity
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .role(Role.valueOf(request.getRole().toUpperCase()))
-                .isActive(true)
+                .role(role)
+                .isActive(true) // explicitly set active
                 .build();
 
         User savedUser = userRepository.save(user);
 
-        // Create Auth
+        // Create UserAuth entity
         UserAuth auth = UserAuth.builder()
                 .user(savedUser)
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .isActive(true)
+               //  .isActive(true) // explicitly set active
                 .build();
 
         authRepository.save(auth);
 
+        // Return response DTO
         return new RegisterResponse(
                 savedUser.getId(),
                 savedUser.getEmail(),
                 savedUser.getRole().name()
         );
     }
+
 
     // ================= LOGIN =================
     @Override

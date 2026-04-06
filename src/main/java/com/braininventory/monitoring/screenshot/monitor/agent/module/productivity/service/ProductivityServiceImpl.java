@@ -1,7 +1,6 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.service.impl;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.service;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.repository.ProductivityRepository;
-import com.braininventory.monitoring.screenshot.monitor.agent.module.activitybackend.service.ProductivityService;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.productivity.repository.ProductivityRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.common.dto.response.ProductivityReportDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
