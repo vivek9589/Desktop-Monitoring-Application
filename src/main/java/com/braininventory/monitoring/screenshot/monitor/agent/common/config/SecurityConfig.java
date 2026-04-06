@@ -1,6 +1,6 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.common.config;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.auth.security.JwtAuthenticationFilter;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
