@@ -1,7 +1,8 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.notification.service.impl;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.entity.UserAuth;
-import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.repository.UserAuthRepository;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.user.repository.UserRepository;
 import com.braininventory.monitoring.screenshot.monitor.agent.notification.service.NotificationService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -20,7 +21,7 @@ import org.thymeleaf.context.Context;
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
 
-    private final UserAuthRepository userAuthRepository;
+    private final UserRepository userRepository;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
@@ -32,12 +33,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public String sendForgetPasswordEmail(String toEmail, String resetToken) {
-        UserAuth user = userAuthRepository.findByEmail(toEmail).orElse(null);
+        User user = userRepository.findByEmail(toEmail).orElse(null);
 
         String resetLink = baseUrl + resetPasswordPath + resetToken;
 
         Context context = new Context();
-        context.setVariable("username", user != null ? user.getEmail() : "User");
+        context.setVariable("username", user.getEmail() != null ? user.getEmail() : "User");
         context.setVariable("resetLink", resetLink);
         context.setVariable("expiryMinutes", 30);
 
