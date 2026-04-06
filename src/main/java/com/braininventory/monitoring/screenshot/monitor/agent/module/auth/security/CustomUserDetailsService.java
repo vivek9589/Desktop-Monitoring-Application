@@ -1,8 +1,8 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.module.auth.security;
 
 
-import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.entity.UserAuth;
-import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.repository.UserAuthRepository;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.*;
@@ -13,19 +13,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserAuthRepository repository;
+    private final UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserAuth auth = repository.findByEmail(email)
+        User user = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        log.info("Loaded user {} with role {}", auth.getEmail(), auth.getRole());
+        log.info("Loaded user {} with role {}", user.getEmail(), user.getRole());
 
         return new CustomUserDetails(
-                auth.getEmail(),
-                auth.getPasswordHash(),
-                auth.getRole().name()
+                user.getEmail(),
+                user.getUserAuth().getPasswordHash(),
+                user.getRole().name()
         );
     }
 }

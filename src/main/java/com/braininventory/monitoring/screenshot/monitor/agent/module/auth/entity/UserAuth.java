@@ -3,6 +3,7 @@ package com.braininventory.monitoring.screenshot.monitor.agent.module.auth.entit
 
 
 import com.braininventory.monitoring.screenshot.monitor.agent.module.auth.enums.Role;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,30 +11,25 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
-@Data
+@Table(name = "user_auth")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserAuth {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID userId;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role; // ADMIN or EMPLOYEE
-
-    @Column(nullable = false)
-    private boolean active = true;
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private boolean isActive = true;
 }
