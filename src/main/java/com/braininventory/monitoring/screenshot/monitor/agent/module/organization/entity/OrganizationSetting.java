@@ -12,6 +12,7 @@ import java.util.UUID;
  * Represents organization-specific settings such as working hours, days, and timezone.
  * Uses shared primary key with Organization entity for strong one-to-one mapping.
  */
+
 @Entity
 @Table(name = "organization_setting")
 @Getter
@@ -22,12 +23,12 @@ import java.util.UUID;
 public class OrganizationSetting {
 
     @Id
-    @Column(name = "organization_id", updatable = false, nullable = false)
-    private UUID organizationId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;   // unique PK for settings
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "organization_id", nullable = false)
+    @JoinColumn(name = "organization_id", nullable = false, unique = true)
     private Organization organization;
 
     @Column(name = "working_hours_per_day", nullable = false)
@@ -40,10 +41,11 @@ public class OrganizationSetting {
     private String timezone;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Version
+    private Long version; // optimistic locking
 }

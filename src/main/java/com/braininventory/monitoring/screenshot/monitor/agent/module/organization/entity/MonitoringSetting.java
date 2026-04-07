@@ -15,6 +15,7 @@ import java.util.UUID;
  * web tracking, and input tracking configurations.
  * Uses shared primary key with Organization entity for strong one-to-one mapping.
  */
+
 @Entity
 @Table(name = "monitoring_setting")
 @Getter
@@ -25,18 +26,19 @@ import java.util.UUID;
 public class MonitoringSetting {
 
     @Id
-    @Column(name = "organization_id", updatable = false, nullable = false)
-    private UUID organizationId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;   // unique PK
+
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "organization_id", nullable = false)
+    @JoinColumn(name = "organization_id", nullable = false, unique = true)
     private Organization organization;
 
     // ==========================
     // Agent Behavior (Intervals & Paths)
     // ==========================
-    @Column(name = "screenshot_frequency_minutes", nullable = false)
+    @Column(name = "screenshot_frequency_minutes")
     @ColumnDefault("20")
     private Integer screenshotFrequencyMinutes = 20;
 
@@ -52,7 +54,7 @@ public class MonitoringSetting {
     @ColumnDefault("'windows'")
     private String osType = "windows";
 
-    @Column(name = "agent_app_interval_ms", nullable = false)
+    @Column(name = "agent_app_interval_ms")
     @ColumnDefault("5000")
     private Integer agentAppIntervalMs = 5000;
 
@@ -63,25 +65,25 @@ public class MonitoringSetting {
     @ColumnDefault("'/api/website-usage'")
     private String websiteApiPath = "/api/website-usage";
 
-    @Column(name = "website_interval_ms", nullable = false)
+    @Column(name = "website_interval_ms")
     @ColumnDefault("5000")
     private Integer websiteIntervalMs = 5000;
 
     // ============================
     // Mouse/Keyboard Tracking Agent
     // ============================
-    @Column(name = "activity_rate_ms", nullable = false)
+    @Column(name = "activity_rate_ms")
     @ColumnDefault("5000")
     private Integer activityRateMs = 5000;
 
-    @Column(name = "idle_check_rate_ms", nullable = false)
+    @Column(name = "idle_check_rate_ms")
     @ColumnDefault("5000")
     private Integer idleCheckRateMs = 5000;
 
     // ============================
     // General Monitoring Flags
     // ============================
-    @Column(name = "blur_screenshots", nullable = false)
+    @Column(name = "blur_screenshots")
     @ColumnDefault("false")
     private Boolean blurScreenshots = false;
 

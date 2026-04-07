@@ -26,6 +26,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
+                                // Swagger and OpenAPI endpoints should be publicly accessible
+//                                .requestMatchers(
+//                                        "/v3/api-docs/**",
+//                                        "/swagger-ui/**",
+//                                        "/swagger-ui.html"
+//                                ).permitAll()
                         //.requestMatchers("/api/auth/**").permitAll()
                         //.requestMatchers("/api/screenshots/upload").permitAll()
                         //.anyRequest().authenticated()
