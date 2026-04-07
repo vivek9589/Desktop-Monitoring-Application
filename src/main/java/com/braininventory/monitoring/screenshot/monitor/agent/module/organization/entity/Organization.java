@@ -1,6 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.module.organization.entity;
 
 
+import com.braininventory.monitoring.screenshot.monitor.agent.module.project.entity.Project;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,15 +27,40 @@ public class Organization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(name = "timezone", length = 100, nullable = false)
-    @ColumnDefault("'IST'")
-    private String timezone = "IST";
+    @Column(length = 255)
+    private String addressLine1;
+
+    @Column(length = 255)
+    private String addressLine2;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 100)
+    private String state;
+
+    @Column(length = 20)
+    private String postalCode;
+
+    @Column(length = 100)
+    private String country;
+
+    @Column(length = 50)
+    private String phoneNumber;
+
+    @Column(length = 150)
+    private String contactEmail;
+
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
 
     @OneToOne(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private OrganizationSetting organizationSetting;
@@ -41,11 +68,13 @@ public class Organization {
     @OneToOne(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private MonitoringSetting monitoringSetting;
 
+    @Column(name = "timezone", length = 100)
+    @ColumnDefault("'IST'")
+    private String timezone = "IST";
+
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
