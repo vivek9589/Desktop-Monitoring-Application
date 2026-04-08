@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -21,6 +22,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id;
 
     @Column(nullable = false, length = 100)
@@ -30,14 +32,14 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Column(nullable = false, length = 50)
+    private Role role = Role.EMPLOYEE; // default role
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAuth userAuth;
 
     @Column(name = "is_active", nullable = false)

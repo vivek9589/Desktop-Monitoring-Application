@@ -16,6 +16,7 @@ import java.util.UUID;
  * Represents an Organization entity with settings and monitoring configurations.
  * Ensures robust mapping with explicit column names and constraints.
  */
+
 @Entity
 @Table(name = "organizations")
 @Getter
@@ -27,6 +28,7 @@ public class Organization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, length = 255)
@@ -56,8 +58,8 @@ public class Organization {
     @Column(length = 150)
     private String contactEmail;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "active", nullable = false)
+    private boolean isActive = true;  // renamed for clarity
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects;
@@ -69,12 +71,22 @@ public class Organization {
     private MonitoringSetting monitoringSetting;
 
     @Column(name = "timezone", length = 100)
-    @ColumnDefault("'IST'")
-    private String timezone = "IST";
+    private String timezone = "Asia/Kolkata";
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    // helper methods
+    public void addProject(Project project) {
+        projects.add(project);
+        project.setOrganization(this);
+    }
+
+    public void removeProject(Project project) {
+        projects.remove(project);
+        project.setOrganization(null);
+    }
 }

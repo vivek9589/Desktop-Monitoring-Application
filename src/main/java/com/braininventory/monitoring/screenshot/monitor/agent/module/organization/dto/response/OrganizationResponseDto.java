@@ -2,6 +2,7 @@ package com.braininventory.monitoring.screenshot.monitor.agent.module.organizati
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class OrganizationResponseDto {
+
     private UUID id;
     private String name;
     private String timezone;
@@ -22,5 +24,9 @@ public class OrganizationResponseDto {
     private String country;
     private String phoneNumber;
     private String contactEmail;
-    private String isActive;
+
+    private boolean isActive;
+
+    private LocalDateTime createdAt;  // added audit field
+    private LocalDateTime updatedAt;  // added audit field
 }

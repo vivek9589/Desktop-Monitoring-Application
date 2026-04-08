@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.project;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.project.enums;
 
 
 /**

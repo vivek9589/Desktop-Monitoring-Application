@@ -1,23 +1,22 @@
-package com.braininventory.monitoring.screenshot.monitor.agent.module.time_tracking.entity;
+package com.braininventory.monitoring.screenshot.monitor.agent.module.project.entity;
 
 import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 
 @Entity
-@Table(name = "breaks")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Break {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,20 +24,16 @@ public class Break {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false, columnDefinition = "BINARY(16)")
+    private Task task;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)")
     private User user;
 
-    @Column(nullable = false)
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
-
-    @Column(length = 500)
-    private String notes;
+    @Column(nullable = false, length = 1000)
+    private String content;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 }
