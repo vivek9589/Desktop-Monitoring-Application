@@ -178,4 +178,33 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
+
+    @ExceptionHandler(DeviceAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDeviceAlreadyExists(DeviceAlreadyExistsException ex) {
+        String requestId = UUID.randomUUID().toString();
+        logger.warn("Device already exists: {}", ex.getMessage());
+
+        ApiResponse<Object> response = ApiResponse.error(
+                "DEVICE_ALREADY_EXISTS",
+                "Device creation failed",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDeviceNotFound(DeviceNotFoundException ex) {
+        String requestId = UUID.randomUUID().toString();
+        logger.warn("Device not found: {}", ex.getMessage());
+
+        ApiResponse<Object> response = ApiResponse.error(
+                "DEVICE_NOT_FOUND",
+                "Requested device not found",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
 }

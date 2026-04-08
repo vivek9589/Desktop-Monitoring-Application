@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -87,12 +86,11 @@ public class OrganizationServiceImpl implements OrganizationService {
             return;
         }
 
-        organization.setActive(false); // mark as inactive instead of deleting
+        organization.setActive(false); // soft delete
         organizationRepository.save(organization);
 
         log.info("Soft deleted organization with id: {}", id);
     }
-
 
     private OrganizationResponseDto mapToResponseDto(Organization organization) {
         return OrganizationResponseDto.builder()
@@ -107,6 +105,10 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .country(organization.getCountry())
                 .phoneNumber(organization.getPhoneNumber())
                 .contactEmail(organization.getContactEmail())
+                .isActive(organization.isActive()) // boolean now
+                .createdAt(organization.getCreatedAt()) // audit fields
+                .updatedAt(organization.getUpdatedAt())
                 .build();
     }
 }
+

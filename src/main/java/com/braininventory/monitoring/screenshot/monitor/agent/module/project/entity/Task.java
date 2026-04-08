@@ -1,6 +1,7 @@
 package com.braininventory.monitoring.screenshot.monitor.agent.module.project.entity;
 
-import com.braininventory.monitoring.screenshot.monitor.agent.module.project.TaskStatus;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.project.enums.TaskStatus;
+import com.braininventory.monitoring.screenshot.monitor.agent.module.project.enums.Priority;
 import com.braininventory.monitoring.screenshot.monitor.agent.module.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,8 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "tasks")
@@ -22,6 +23,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, length = 255)
@@ -34,6 +36,13 @@ public class Task {
     @Column(nullable = false, length = 50)
     private TaskStatus status = TaskStatus.PENDING;
 
+    @Column(name = "priority", length = 50)
+    @Enumerated(EnumType.STRING)
+    private Priority priority = Priority.MEDIUM; // e.g., HIGH, MEDIUM, LOW
+
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
+
     @Column(name = "estimated_minutes")
     private Integer estimatedMinutes;
 
@@ -41,12 +50,19 @@ public class Task {
     private Integer actualMinutes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_user_id")
-    private User assignedUser; // single assignee
+    @JoinColumn(name = "assigned_user_id", columnDefinition = "BINARY(16)")
+    private User assignedUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false, columnDefinition = "BINARY(16)")
     private Project project;
+
+//    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments;
+
+    @Column(name = "comment")
+    private String comment;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;
