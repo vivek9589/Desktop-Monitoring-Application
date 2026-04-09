@@ -245,4 +245,17 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(OrganizationNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleOrganizationNotFound(OrganizationNotFoundException ex) {
+        String requestId = UUID.randomUUID().toString();
+        ApiResponse<Object> response = ApiResponse.error(
+                "ORGANIZATION_NOT_FOUND",
+                "Requested organization not found",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+
 }
