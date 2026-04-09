@@ -207,4 +207,42 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleTaskNotFound(TaskNotFoundException ex) {
+        String requestId = UUID.randomUUID().toString();
+        ApiResponse<Object> response = ApiResponse.error(
+                "TASK_NOT_FOUND",
+                "Requested task not found",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleProjectNotFound(ProjectNotFoundException ex) {
+        String requestId = UUID.randomUUID().toString();
+        ApiResponse<Object> response = ApiResponse.error(
+                "PROJECT_NOT_FOUND",
+                "Requested project not found",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleUserNotFound(UserNotFoundException ex) {
+        String requestId = UUID.randomUUID().toString();
+        ApiResponse<Object> response = ApiResponse.error(
+                "USER_NOT_FOUND",
+                "Requested user not found",
+                ex.getMessage(),
+                requestId
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+
 }
