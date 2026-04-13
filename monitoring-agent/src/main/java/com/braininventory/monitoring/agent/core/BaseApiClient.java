@@ -22,7 +22,7 @@ public abstract class BaseApiClient {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    protected String post(String url, String apiKey, Object payload) {
+     protected String post(String url, String apiKey, Object payload) {
         try {
             String json = objectMapper.writeValueAsString(payload);
 
@@ -53,6 +53,29 @@ public abstract class BaseApiClient {
         } catch (Exception ex) {
             log.error("API call failed. Payload={}", payload, ex);
             throw new AgentException("Unexpected error during API call");
+        }
+    }
+
+    // ADD THIS GET METHOD
+    public <T> T get(String url, String apiKey, Class<T> responseType) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(10))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() >= 400) {
+                return null; // Or throw custom exception
+            }
+
+            return objectMapper.readValue(response.body(), responseType);
+        } catch (Exception ex) {
+            log.error("GET request failed to URL: {}", url, ex);
+            return null;
         }
     }
 }

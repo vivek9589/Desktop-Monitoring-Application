@@ -1,4 +1,4 @@
-package com.braininventory.monitoring.agent.website;
+package com.braininventory.monitoring.server.module.activitybackend.service;
 
 
 import com.braininventory.monitoring.common.dto.request.ActiveTabDto;
