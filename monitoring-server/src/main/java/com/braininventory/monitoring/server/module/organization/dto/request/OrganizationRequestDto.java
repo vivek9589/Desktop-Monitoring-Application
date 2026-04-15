@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class OrganizationRequestDto {
 
-    @NotBlank
+
     private String name;
 
     private String timezone = "Asia/Kolkata";

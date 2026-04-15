@@ -31,8 +31,8 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
 
 # Custom ignore
 screenshots/
-.env
+config.bat
+node_modules

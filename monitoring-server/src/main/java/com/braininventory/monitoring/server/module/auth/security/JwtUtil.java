@@ -34,10 +34,11 @@ public class JwtUtil {
 
 
 
-    public String generateToken(String userId, String email, String role) {
+    public String generateToken(String userId, String email, String role, String organizationId) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
+                .claim("organizationId", organizationId) // Assuming userId is same as organizationId for simplicity
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))

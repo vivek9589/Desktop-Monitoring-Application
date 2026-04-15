@@ -2,6 +2,7 @@ package com.braininventory.monitoring.server.module.auth.service;
 
 
 import com.braininventory.monitoring.server.module.auth.dto.request.LoginRequest;
+import com.braininventory.monitoring.server.module.auth.dto.request.OnboardingRequest;
 import com.braininventory.monitoring.server.module.auth.dto.request.RegisterRequest;
 import com.braininventory.monitoring.server.module.auth.dto.response.LoginResponse;
 import com.braininventory.monitoring.server.module.auth.dto.response.RegisterResponse;
@@ -12,4 +13,7 @@ public interface AuthService {
     String logout(String email);
     String forgetPassword(String email);
     String resetPassword(String token, String newPassword);
+
+
+    RegisterResponse onboardOrganization(OnboardingRequest request);
 }

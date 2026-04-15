@@ -55,7 +55,7 @@ public class OrganizationController {
     }
 
     // Update Organization
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<OrganizationResponseDto>> updateOrganization(
             @PathVariable UUID id,
             @Valid @RequestBody OrganizationRequestDto requestDto,

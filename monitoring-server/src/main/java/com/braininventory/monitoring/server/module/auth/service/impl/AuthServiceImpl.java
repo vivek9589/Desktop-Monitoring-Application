@@ -1,11 +1,9 @@
 package com.braininventory.monitoring.server.module.auth.service.impl;
 
 
-import com.braininventory.monitoring.common.exception.AuthException;
-import com.braininventory.monitoring.common.exception.EmailAlreadyRegisteredException;
-import com.braininventory.monitoring.common.exception.InvalidCredentialsException;
-import com.braininventory.monitoring.common.exception.InvalidRoleException;
+import com.braininventory.monitoring.common.exception.*;
 import com.braininventory.monitoring.server.module.auth.dto.request.LoginRequest;
+import com.braininventory.monitoring.server.module.auth.dto.request.OnboardingRequest;
 import com.braininventory.monitoring.server.module.auth.dto.request.RegisterRequest;
 import com.braininventory.monitoring.server.module.auth.dto.response.LoginResponse;
 import com.braininventory.monitoring.server.module.auth.dto.response.RegisterResponse;
@@ -17,7 +15,11 @@ import com.braininventory.monitoring.server.module.auth.repository.UserAuthRepos
 import com.braininventory.monitoring.server.module.auth.security.JwtUtil;
 import com.braininventory.monitoring.server.module.auth.service.AuthService;
 import com.braininventory.monitoring.server.module.notification.service.NotificationService;
+import com.braininventory.monitoring.server.module.organization.entity.Organization;
+import com.braininventory.monitoring.server.module.organization.repository.OrganizationRepository;
+import com.braininventory.monitoring.server.module.user.entity.Invitation;
 import com.braininventory.monitoring.server.module.user.entity.User;
+import com.braininventory.monitoring.server.module.user.repository.InvitationRepository;
 import com.braininventory.monitoring.server.module.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,55 +43,52 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final ResetTokenRepository resetTokenRepository;
     private final NotificationService notificationService;
+    private final OrganizationRepository organizationRepository;
+    private final InvitationRepository invitationRepository;
 
     // ================= REGISTER =================
     @Transactional
     @Override
     public RegisterResponse register(RegisterRequest request) {
-        // Check for duplicate email
+        // 1. Fetch and Verify Invitation via Token
+        Invitation invitation = invitationRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid or expired invitation token"));
+
+        if (invitation.isAccepted() || invitation.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new AuthException("This invitation is no longer valid", HttpStatus.GONE);
+        }
+
+        // 2. Prevent duplicate email registration
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyRegisteredException("Email already exists");
+            throw new EmailAlreadyRegisteredException("A user with this email is already registered.");
         }
 
-        // Determine role: default to EMPLOYEE if not provided
-        Role role;
-        if (request.getRole() == null || request.getRole().isBlank()) {
-            role = Role.EMPLOYEE;
-        } else {
-            try {
-                role = Role.valueOf(request.getRole().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new InvalidRoleException("Role must be ADMIN or EMPLOYEE");
-            }
-        }
-
-        // Create User entity
+        // 3. Create User & link to the Organization found in the Invitation
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .role(role)
-                .isActive(true) // explicitly set active
+                .role(Role.EMPLOYEE) // Employee role for invited users
+                .organization(invitation.getOrganization()) // AUTO-LINKING HAPPENS HERE
+                .isActive(true)
                 .build();
 
         User savedUser = userRepository.save(user);
 
-        // Create UserAuth entity
+        // 4. Set Password
         UserAuth auth = UserAuth.builder()
                 .user(savedUser)
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
-               //  .isActive(true) // explicitly set active
                 .build();
-
         authRepository.save(auth);
 
-        // Return response DTO
-        return new RegisterResponse(
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getRole().name()
-        );
-    }
+        // 5. Consume the Invitation
+        invitation.setAccepted(true);
+        invitationRepository.save(invitation);
 
+        log.info("Employee registered and linked to Organization: {}", invitation.getOrganization().getName());
+
+        return new RegisterResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getRole().name());
+    }
 
     // ================= LOGIN =================
     @Override
@@ -108,7 +107,8 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(
                 user.getId().toString(),
                 user.getEmail(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getOrganization().getId().toString()
         );
 
         log.info("User {} logged in", user.getEmail());
@@ -171,5 +171,55 @@ public class AuthServiceImpl implements AuthService {
         resetTokenRepository.save(resetToken);
 
         return "Password reset successful";
+    }
+
+    @Transactional
+    @Override
+    public RegisterResponse onboardOrganization(OnboardingRequest request) {
+        log.info("Starting onboarding process for admin: {}", request.getAdminDetails().getEmail());
+
+        // 1. Validation: Check if email is already taken
+        if (userRepository.findByEmail(request.getAdminDetails().getEmail()).isPresent()) {
+            log.warn("Onboarding failed: Email {} already exists", request.getAdminDetails().getEmail());
+            // This maps to handleEmailAlreadyRegistered in your GlobalExceptionHandler
+            throw new EmailAlreadyRegisteredException("An account with this email already exists.");
+        }
+
+        try {
+            // 2. Create Organization
+            Organization organization = Organization.builder()
+                    .name(request.getOrganizationDetails().getName())
+                    .timezone(request.getOrganizationDetails().getTimezone())
+                    .contactEmail(request.getAdminDetails().getEmail())
+                    .isActive(true)
+                    .build();
+            Organization savedOrg = organizationRepository.save(organization);
+
+            // 3. Create User
+            User admin = User.builder()
+                    .name(request.getAdminDetails().getName())
+                    .email(request.getAdminDetails().getEmail())
+                    .role(Role.ADMIN)
+                    .organization(savedOrg)
+                    .isActive(true)
+                    .build();
+            User savedAdmin = userRepository.save(admin);
+
+            // 4. Create UserAuth
+            UserAuth auth = UserAuth.builder()
+                    .user(savedAdmin)
+                    .passwordHash(passwordEncoder.encode(request.getAdminDetails().getPassword()))
+                    .build();
+            authRepository.save(auth);
+
+            log.info("Successfully onboarded organization {} and admin {}", savedOrg.getId(), savedAdmin.getEmail());
+
+            return new RegisterResponse(savedAdmin.getId(), savedAdmin.getEmail(), "ADMIN");
+
+        } catch (Exception e) {
+            log.error("Critical error during organization onboarding", e);
+            // This maps to handleException (Internal Server Error) in your GlobalExceptionHandler
+            throw new RuntimeException("System failed to complete onboarding: " + e.getMessage());
+        }
     }
 }
