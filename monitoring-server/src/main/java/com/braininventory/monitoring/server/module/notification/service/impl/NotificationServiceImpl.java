@@ -60,4 +60,31 @@ public class NotificationServiceImpl implements NotificationService {
             throw new RuntimeException("Failed to send email", e);
         }
     }
+
+    @Override
+    public void sendInvitationEmail(String toEmail, String token, String orgName) {
+        // URL for the frontend registration page with the token
+       // String inviteLink = baseUrl + "/register/employee?token=" + token;
+        String inviteLink = baseUrl + "/api/auth/register?token=" + token;
+
+        Context context = new Context();
+        context.setVariable("orgName", orgName);
+        context.setVariable("inviteLink", inviteLink);
+        context.setVariable("downloadLink", baseUrl + "/download/agent"); // Link for the .exe
+
+        String body = templateEngine.process("employee-invitation", context);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(toEmail);
+            helper.setSubject("Invitation to join " + orgName + " on WorkMonitor");
+            helper.setText(body, true);
+            mailSender.send(message);
+            log.info("Invitation email sent to {}", toEmail);
+        } catch (MessagingException e) {
+            log.error("Failed to send invitation email to {}", toEmail, e);
+            throw new RuntimeException("Email delivery failed");
+        }
+    }
 }
