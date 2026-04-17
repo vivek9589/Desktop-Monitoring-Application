@@ -3,6 +3,7 @@ package com.braininventory.monitoring.agent.activity.scheduler;
 import com.braininventory.monitoring.agent.activity.ActivityState;
 
 import com.braininventory.monitoring.agent.client.ActivityClient;
+import com.braininventory.monitoring.agent.config.AuthContext;
 import com.braininventory.monitoring.common.dto.request.ActivityRequest;
 
 import com.braininventory.monitoring.common.dto.request.IdleSessionDto;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class ActivityScheduler {
 
     private final ActivityClient activityClient;
+    private final AuthContext authContext;
 
     @Value("${agent.id}")
     private String agentId;
@@ -49,7 +51,9 @@ public class ActivityScheduler {
 
         //  3. Build request
         ActivityRequest request = ActivityRequest.builder()
-                .agentId(agentId)
+                // .agentId(agentId)
+                .agentId(authContext.getUserId())
+                //.organizationId(authContext.getOrganizationId())
                 .keyboardCount(keyboard)
                 .mouseCount(mouse)
                 .idle(idle)

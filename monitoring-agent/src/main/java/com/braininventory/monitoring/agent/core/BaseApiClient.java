@@ -2,6 +2,7 @@ package com.braininventory.monitoring.agent.core;
 
 
 
+import com.braininventory.monitoring.agent.config.TokenManager;
 import com.braininventory.monitoring.common.exception.AgentException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +22,18 @@ public abstract class BaseApiClient {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final TokenManager tokenManager;
 
      protected String post(String url, String apiKey, Object payload) {
         try {
-            String json = objectMapper.writeValueAsString(payload);
+            String token = tokenManager.getToken();
+            // Fallback or error handling if token is null
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(15)) // configurable via HttpClientConfig
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + apiKey)
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .header("Authorization", "Bearer " + token) // Dynamic Token
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(payload)))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
