@@ -1,6 +1,7 @@
 package com.braininventory.monitoring.agent.client;
 
 
+import com.braininventory.monitoring.agent.config.TokenManager;
 import com.braininventory.monitoring.agent.core.BaseApiClient;
 import com.braininventory.monitoring.common.dto.request.WebsiteUsageDto;
 import com.braininventory.monitoring.common.exception.AgentException;
@@ -21,30 +22,37 @@ import java.net.http.HttpClient;
 public class WebsiteUsageClient extends BaseApiClient {
 
     private final String finalUrl;
-    private final String apiKey;
+    private final TokenManager tokenManager;
 
     public WebsiteUsageClient(
             HttpClient httpClient,
             ObjectMapper objectMapper,
-            @Value("${app.base-url}") String baseUrl, // Inject the base (http://localhost:9090)
-            @Value("${backend.website.path:/api/website-usage}") String path, // The specific path
-            @Value("${backend.api.key}") String apiKey
+            TokenManager tokenManager, // Injected via Spring
+            @Value("${app.base-url}") String baseUrl,
+            @Value("${backend.website.path:/api/website-usage}") String path
     ) {
-        super(httpClient, objectMapper);
-        // Combine them to form: http://localhost:9090/api/website-usage
+        // FIX: Pass all three required beans to the parent class
+        super(httpClient, objectMapper, tokenManager);
+
         this.finalUrl = baseUrl + path;
-        this.apiKey = apiKey;
+        this.tokenManager = tokenManager;
     }
 
     public void send(WebsiteUsageDto dto) {
         try {
+            String dynamicToken = tokenManager.getToken();
+
+            if (dynamicToken == null) {
+                log.warn("Skipping send: User not authenticated.");
+                return;
+            }
+
             log.debug("Sending website usage to: {}", finalUrl);
-            post(finalUrl, apiKey, dto);
+            // Now using the dynamic token
+            post(finalUrl, dynamicToken, dto);
             log.info("Website usage sent successfully for URL: {}", dto.getUrl());
-        } catch (AgentException ex) {
-            log.warn("Backend rejected website usage: {}", ex.getMessage());
         } catch (Exception ex) {
-            log.error("Failed to send website usage to {}", finalUrl, ex);
+            log.error("Failed to send website usage", ex);
         }
     }
 }

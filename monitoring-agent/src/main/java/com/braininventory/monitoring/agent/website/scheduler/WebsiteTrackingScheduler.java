@@ -1,4 +1,5 @@
 package com.braininventory.monitoring.agent.website.scheduler;
+import com.braininventory.monitoring.agent.config.TokenManager;
 import com.braininventory.monitoring.agent.website.detector.BrowserMetadata;
 import com.braininventory.monitoring.agent.website.detector.BrowserMetadataFetcher;
 import com.braininventory.monitoring.agent.website.state.WebsiteSessionManager;
@@ -20,6 +21,7 @@ public class WebsiteTrackingScheduler {
 
     private final BrowserMetadataFetcher metadataFetcher;
     private final WebsiteSessionManager sessionManager;
+    private final TokenManager tokenManager;
 
 
 
@@ -28,20 +30,22 @@ public class WebsiteTrackingScheduler {
 
     @Scheduled(fixedDelayString = "${agent.website.interval:5000}")
     public void trackWebsite() {
+        // PRE-CONDITION: If no token, don't waste CPU resources
+        if (!tokenManager.isAuthenticated()) {
+            log.trace("User not authenticated. Skipping website tracking.");
+            return;
+        }
+
         try {
             BrowserMetadata metadata = metadataFetcher.getCurrent();
             String title = metadata.title();
             boolean isBrowser = metadata.isBrowser();
 
-            String url = metadata.url() != null
-                    ? metadata.url()
-                    : normalize(title);
-            log.debug("Tracking -> URL: {}, Browser: {}, Interval: {} ms", url, isBrowser, interval);
+            String url = metadata.url() != null ? metadata.url() : normalize(title);
 
             sessionManager.handle(url, title, isBrowser);
         } catch (Exception ex) {
             log.error("Website tracking scheduler failed", ex);
-            throw new AgentException("Scheduler failure: " + ex.getMessage());
         }
     }
 
