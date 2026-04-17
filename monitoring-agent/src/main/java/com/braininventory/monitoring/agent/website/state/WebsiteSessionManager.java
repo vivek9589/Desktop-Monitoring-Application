@@ -1,6 +1,7 @@
 package com.braininventory.monitoring.agent.website.state;
 import com.braininventory.monitoring.agent.activity.ActivityState;
 import com.braininventory.monitoring.agent.client.WebsiteUsageClient;
+import com.braininventory.monitoring.agent.config.AuthContext;
 import com.braininventory.monitoring.common.dto.request.WebsiteUsageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class WebsiteSessionManager {
 
     private final WebsiteUsageClient websiteUsageClient;
+    private final AuthContext authContext; // Inject AuthContext
     private WebsiteSession currentSession;
 
     @Value("${agent.id}")
@@ -64,13 +66,14 @@ public class WebsiteSessionManager {
             long durationSeconds = currentSession.getDurationSeconds();
 
             if (durationSeconds < 1) {
-                log.debug("Ignoring short session (<1s) for {}", currentSession.getUrl());
                 currentSession = null;
                 return;
             }
 
+            // BUILD DTO USING DYNAMIC DATA
             WebsiteUsageDto dto = WebsiteUsageDto.builder()
-                    .agentId(this.agentId)
+                    .agentId(authContext.getUserId())           // FROM TOKEN
+                    //.organizationId(authContext.getOrganizationId()) // FROM TOKEN
                     .url(currentSession.getUrl())
                     .title(currentSession.getTitle())
                     .startTime(currentSession.getStartTime())
@@ -79,9 +82,6 @@ public class WebsiteSessionManager {
                     .build();
 
             websiteUsageClient.send(dto);
-
-            log.info("Website session ENDED [{}] -> {} | Duration: {} sec",
-                    reason, currentSession.getUrl(), durationSeconds);
 
         } catch (Exception ex) {
             log.error("Failed to end session", ex);

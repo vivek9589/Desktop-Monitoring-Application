@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class ActivityRequest {
     private String agentId;
+    //private String organizationId;
     private int keyboardCount;
     private int mouseCount;
     private boolean idle;

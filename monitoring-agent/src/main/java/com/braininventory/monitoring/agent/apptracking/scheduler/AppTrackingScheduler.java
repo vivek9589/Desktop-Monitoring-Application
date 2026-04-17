@@ -5,6 +5,8 @@ import com.braininventory.monitoring.agent.activity.ActivityState;
 import com.braininventory.monitoring.agent.apptracking.detector.ActiveWindowDetector;
 import com.braininventory.monitoring.agent.apptracking.state.AppTrackingState;
 import com.braininventory.monitoring.agent.client.AppUsageClient;
+import com.braininventory.monitoring.agent.config.AuthContext;
+import com.braininventory.monitoring.agent.config.TokenManager;
 import com.braininventory.monitoring.common.dto.request.AppActivityRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,36 +26,30 @@ public class AppTrackingScheduler {
 
     private final ActiveWindowDetector detector;
     private final AppUsageClient appUsageClient;
+    private final AuthContext authContext; // Dynamic token data
+    private final TokenManager tokenManager;
 
-    @Value("${agent.id}")
-    private String agentId;
-
-    // @Scheduled(fixedRate = 5000)
     @Scheduled(fixedDelayString = "${agent.app.interval:5000}")
     public void trackApp() {
+        // Pre-check: Don't track if not logged in
+        if (!tokenManager.isAuthenticated()) {
+            return;
+        }
 
-        //  1. Check IDLE (USE YOUR EXISTING LOGIC)
         if (ActivityState.isIdle()) {
             log.info("User is IDLE → Skipping app tracking");
             return;
         }
 
-        //  2. Get current app
-        String rawApp = detector.getActiveApp();
-        String rawTitle = detector.getWindowTitle();
+        String app = cleanAppName(detector.getActiveApp());
+        String title = cleanTitle(detector.getWindowTitle());
 
-        String app = cleanAppName(rawApp);
-        String title = cleanTitle(rawTitle);
-
-        //  3. First run
         if (AppTrackingState.isFirstRun()) {
             AppTrackingState.startSession(app, title);
             return;
         }
 
-        // 4. If app changed → CLOSE previous session
         if (AppTrackingState.isAppChanged(app)) {
-
             LocalDateTime endTime = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
 
             long duration = Duration.between(
@@ -61,16 +57,16 @@ public class AppTrackingScheduler {
                     endTime
             ).getSeconds();
 
-            //  Ignore small sessions
             if (duration < 5) {
                 AppTrackingState.startSession(app, title);
                 return;
             }
 
-            // Send to backend
+            // USE DYNAMIC USER AND ORG IDs
             appUsageClient.send(
                     AppActivityRequest.builder()
-                            .agentId(agentId)
+                            .agentId(authContext.getUserId())           // From JWT
+                            //.organizationId(authContext.getOrganizationId()) // From JWT
                             .appName(app)
                             .windowTitle(title)
                             .startTime(AppTrackingState.getStartTime())
@@ -79,29 +75,18 @@ public class AppTrackingScheduler {
                             .build()
             );
 
-            log.info("App session sent: {} | {} sec", app, duration);
-
-            // Start new session
+            log.info("App session sent for user {}: {} | {} sec", authContext.getUserId(), app, duration);
             AppTrackingState.startSession(app, title);
         }
     }
 
     private String cleanTitle(String title) {
         if (title == null || title.isEmpty()) return "unknown";
-
-        if (title.contains("-")) {
-            return title.split("-")[0].trim();
-        }
-
-        return title;
+        return title.split("-")[0].trim();
     }
 
     private String cleanAppName(String app) {
         if (app == null) return "unknown";
-
-        return app
-                .replace(".exe", "")
-                .replace(".EXE", "")
-                .trim();
+        return app.replace(".exe", "").replace(".EXE", "").trim();
     }
 }

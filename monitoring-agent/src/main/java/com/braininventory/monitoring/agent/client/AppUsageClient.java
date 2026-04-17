@@ -1,5 +1,6 @@
 package com.braininventory.monitoring.agent.client;
 
+import com.braininventory.monitoring.agent.config.TokenManager;
 import com.braininventory.monitoring.agent.core.BaseApiClient;
 import com.braininventory.monitoring.common.dto.request.AppActivityRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,29 +15,32 @@ import java.net.http.HttpClient;
 public class AppUsageClient extends BaseApiClient {
 
     private final String baseUrl;
-    private final String apiKey;
+    private final TokenManager tokenManager;
 
     public AppUsageClient(
             HttpClient httpClient,
             ObjectMapper objectMapper,
-            @Value("${app.base-url}") String baseUrl,
-            @Value("${backend.api.key:}") String apiKey) { // Added a default empty string if key isn't provided
-        super(httpClient, objectMapper);
+            TokenManager tokenManager, // Injecting TokenManager
+            @Value("${app.base-url}") String baseUrl) {
+        // FIX: Passing all three required beans to the parent class
+        super(httpClient, objectMapper, tokenManager);
         this.baseUrl = baseUrl;
-        this.apiKey = apiKey;
+        this.tokenManager = tokenManager;
     }
 
-    /**
-     * Sends the app activity session to the backend.
-     * * @param request The activity data payload
-     * @return The response body from the server
-     */
     public String send(AppActivityRequest request) {
         String url = baseUrl + "/api/app-usage";
 
-        log.debug("Sending app activity for agent: {}", request.getAgentId());
+        // Get dynamic token from local storage
+        String dynamicToken = tokenManager.getToken();
 
-        // Utilizing the 'post' method from BaseApiClient
-        return post(url, apiKey, request);
+        if (dynamicToken == null) {
+            log.warn("App usage data not sent: User not authenticated.");
+            return null;
+        }
+
+        log.debug("Sending app activity for user: {}", request.getAgentId());
+        // Use dynamicToken instead of static apiKey
+        return post(url, dynamicToken, request);
     }
 }
