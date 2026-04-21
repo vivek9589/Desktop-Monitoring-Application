@@ -13,6 +13,10 @@ public class TrackerInitializer {
     @PostConstruct
     public void init() {
         try {
+//            if (!GlobalScreen.isNativeHookRegistered()) {
+//                GlobalScreen.registerNativeHook();
+//            }
+
             GlobalScreen.registerNativeHook();
 
             GlobalScreen.addNativeKeyListener(new KeyboardTracker());
