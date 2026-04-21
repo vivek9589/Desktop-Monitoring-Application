@@ -7,6 +7,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.io.File;
+
 @SpringBootApplication(exclude = {
         org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
         org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class
@@ -14,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class AgentApplication {
     public static void main(String[] args) {
+        //System.setProperty("jnativehook.lib.path", "app/libs");
         // Disable headless mode to allow Swing/AWT popups
         ConfigurableApplicationContext context = new SpringApplicationBuilder(AgentApplication.class)
                 .headless(false)
