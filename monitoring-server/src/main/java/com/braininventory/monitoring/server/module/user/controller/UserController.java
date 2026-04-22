@@ -3,16 +3,16 @@ package com.braininventory.monitoring.server.module.user.controller;
 
 import com.braininventory.monitoring.common.dto.ApiResponse;
 import com.braininventory.monitoring.common.exception.UserNotFoundException;
+import com.braininventory.monitoring.server.module.user.dto.request.UserResponse;
 import com.braininventory.monitoring.server.module.user.entity.User;
 import com.braininventory.monitoring.server.module.user.repository.UserRepository;
 import com.braininventory.monitoring.server.module.user.service.InvitationService;
+import com.braininventory.monitoring.server.module.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,6 +25,16 @@ public class UserController {
 
     private final InvitationService invitationService;
     private final UserRepository userRepository;
+    private final UserService userService;
+
+
+    @GetMapping("/active/employees/{organizationId}")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getActiveEmployeesByOrganization(
+            @PathVariable UUID organizationId,
+            HttpServletRequest httpRequest) {
+        List<UserResponse> response = userService.getActiveEmployeesByOrganization(organizationId);
+        return ResponseEntity.ok(ApiResponse.success(response, httpRequest.getRequestId()));
+    }
 
     @PostMapping("/invite")
     @PreAuthorize("hasRole('ADMIN')")
