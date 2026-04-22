@@ -1,6 +1,7 @@
 // config.js
 export const CONFIG = {
-  BASE_URL: "http://localhost:9090",   // change to prod URL when building
+  //BASE_URL: "http://localhost:9090",   // change to prod URL when building
+  BASE_URL: "http://192.168.68.133:9090",
   API_ACTIVE_TAB: "/api/active-tab",
   LOG_LEVEL: "debug"
 };
