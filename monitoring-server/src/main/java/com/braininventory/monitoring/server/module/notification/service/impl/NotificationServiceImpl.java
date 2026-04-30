@@ -64,8 +64,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendInvitationEmail(String toEmail, String token, String orgName) {
         // URL for the frontend registration page with the token
-       // String inviteLink = baseUrl + "/register/employee?token=" + token;
-        String inviteLink = baseUrl + "/api/auth/register?token=" + token;
+       // String inviteLink = baseUrl + "/api/auth/register?token=" + token;
+        String inviteLink = "http://localhost:5173/register" + "?token=" + token;
 
         Context context = new Context();
         context.setVariable("orgName", orgName);

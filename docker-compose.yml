@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: DesktopMonitoringDB
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # ADD THIS HEALTHCHECK
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      timeout: 5s
+      retries: 10
+      interval: 5s
+
+  monitoring-server:
+    image: vivek9589/monitoring-server:latest
+    container_name: monitoring-server
+    depends_on:
+      mysql:
+        condition: service_healthy # WAIT FOR MYSQL TO BE FULLY READY
+    ports:
+      - "8080:8080"
+    environment:
+      # Database Connection
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DesktopMonitoringDB?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+
+      # Fix for MySQL UUID support (Hibernate 6+)
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_TYPE_PREFERRED_UUID_JDBC_TYPE: BINARY
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+      # Cloudinary
+      CLOUD_NAME: dnpmn8agl
+      CLOUD_API_KEY: 787535992935861
+      CLOUD_API_SECRET: EsU9VnFtC-VBRyNB4RuE-OxLuqc
+
+      # Security
+      JWT_SECRET: thisIsASuperStrongSecretKeyChangeMe1234567890
+
+      # Mail
+      MAIL_USER: v.rathore@braininventory.com
+      MAIL_PASS: jqylchrblsrnlkpw
+
+      # Backend Integration
+      BACKEND_API_KEY: SECRET_KEY
+      AGENT_ID: agent-001
+      SERVER_PORT: 8080
+
+volumes:
+  mysql_data:
