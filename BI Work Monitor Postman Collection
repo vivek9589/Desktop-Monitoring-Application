@@ -1,0 +1,1399 @@
+{
+  "info": {
+    "_postman_id": "58d6816a-27f4-444d-8289-64ec63376e18",
+    "name": "Screenshot Monitor API - Full",
+    "description": "Full Postman collection generated from OpenAPI 3.1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41654327",
+    "_collection_link": "https://go.postman.co/collection/41654327-58d6816a-27f4-444d-8289-64ec63376e18?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth Controller",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "if (res?.data?.token) {\r",
+                  "    pm.environment.set(\"token\", res.data.token);\r",
+                  "    pm.environment.set(\"userId\", res.data.userId || \"\");\r",
+                  "    pm.environment.set(\"organizationId\", res.data.organizationId || \"\");\r",
+                  "    pm.environment.set(\"role\", res.data.role);\r",
+                  "\r",
+                  "    console.log(\"✅ Token saved\");\r",
+                  "} else {\r",
+                  "    console.error(\"❌ Token not found in response\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sufiyan.admin@braininventory.com\",\n  \"password\": \"sufiyan@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Onboard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"adminDetails\": {\r\n    \"name\": \"Anita Sharma\",\r\n    \"email\": \"anita@gmail.com\",\r\n    \"password\": \"anita@123\"\r\n  },\r\n  \"organizationDetails\": {\r\n    \"name\": \"TechSphere Solutions\",\r\n    \"timezone\": \"America/New_York\",\r\n    \"addressLine1\": \"456 Park Avenue\",\r\n    \"addressLine2\": \"Floor 12\",\r\n    \"city\": \"New York\",\r\n    \"state\": \"NY\",\r\n    \"postalCode\": \"10022\",\r\n    \"country\": \"USA\",\r\n    \"phoneNumber\": \"+1-212-555-7890\",\r\n    \"contactEmail\": \"info@techsphere.io\"\r\n  }\r\n}\r\n"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/onboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "onboard"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout?email=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forget Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forget-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "forget-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organization Controller",
+      "item": [
+        {
+          "name": "Get All Organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "67ed0dcc-ac98-4595-bf59-00bb747d2db9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organization Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Settings",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Settings",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring Settings",
+      "item": [
+        {
+          "name": "Get Monitoring Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/monitoring-settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "monitoring-settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create/Update Monitoring Settings",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/monitoring-settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "monitoring-settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Monitoring Settings",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/:organizationId/monitoring-settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ":organizationId",
+                "monitoring-settings"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project Controller",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Numetric\",\r\n  \"description\": \"Numetric project description\",\r\n  \"startDate\": \"2026-04-22T09:00:00\",\r\n  \"endDate\": null,\r\n  \"organizationId\": \"67ed0dcc-ac98-4595-bf59-00bb747d2db9\",\r\n  \"assignedUserIds\": []\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/projects/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projects",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "a5599ad9-b772-4a59-bd36-7689ea13d904"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"4f50ce50-a8f8-4b11-bbe9-436ee99bce44\",\r\n            \"name\": \"Clarity OS\",\r\n            \"description\": \"Clarity OS project description\",\r\n            \"startDate\": \"2026-04-22T09:00:00\",\r\n            \"endDate\": \"2026-08-22T18:00:00\",\r\n            \"organizationId\": \"4f50ce50-a8f8-4b11-bbe9-436ee99bce44\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/projects/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projects",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "4f50ce50-a8f8-4b11-bbe9-436ee99bce44"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/projects/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projects",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "eb095714-cee2-4d4f-be1f-460168a234b7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add employee to Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer <your_token_here>"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userIds\": [\n      \"9994163c-333b-4056-983f-002960afb232\", \n      \"eada349a-50c1-4a54-a32d-c3ad7799d308\",\n      \"d5168a46-b466-48a8-912f-1212aab5b804\"\n    ]\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9090/api/projects/f65749d5-85f1-49bd-89e6-dc6ce6f0cc10/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "api",
+                "projects",
+                "f65749d5-85f1-49bd-89e6-dc6ce6f0cc10",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task Controller",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/:taskId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                ":taskId"
+              ],
+              "variable": [
+                {
+                  "key": "taskId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/:taskId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                ":taskId"
+              ],
+              "variable": [
+                {
+                  "key": "taskId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/:taskId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                ":taskId"
+              ],
+              "variable": [
+                {
+                  "key": "taskId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tasks By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/user/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "9994163c-333b-4056-983f-002960afb232"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tasks By Project",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/project/:projectId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "project",
+                ":projectId"
+              ],
+              "variable": [
+                {
+                  "key": "projectId",
+                  "value": "f65749d5-85f1-49bd-89e6-dc6ce6f0cc10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Controller",
+      "item": [
+        {
+          "name": "Invite Employees",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\"r.kushwah@braininventory.com\"]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/invite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "invite"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Active Employees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/active/employees/:organizationId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "active",
+                "employees",
+                ":organizationId"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Device Controller",
+      "item": [
+        {
+          "name": "Get Devices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/devices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "devices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Device",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/devices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "devices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Device",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/devices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "devices",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Device",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/devices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "devices",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Activity + Usage",
+      "item": [
+        {
+          "name": "Track Activity",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/monitor/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "monitor",
+                "activity"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "App Usage",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/app-usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "app-usage"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Website Usage",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/website-usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "website-usage"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Screenshots",
+      "item": [
+        {
+          "name": "Upload Screenshot",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "agentId",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/screenshots/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "screenshots",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Screenshots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/screenshots",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "screenshots"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Productivity",
+      "item": [
+        {
+          "name": "Today",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productivity/:agentId/daily",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productivity",
+                ":agentId",
+                "daily"
+              ],
+              "variable": [
+                {
+                  "key": "agentId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Yesterday",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productivity/:agentId/yesterday",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productivity",
+                ":agentId",
+                "yesterday"
+              ],
+              "variable": [
+                {
+                  "key": "agentId",
+                  "value": "d5168a46-b466-48a8-912f-1212aab5b804"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Weekly",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productivity/:agentId/weekly",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productivity",
+                ":agentId",
+                "weekly"
+              ],
+              "variable": [
+                {
+                  "key": "agentId",
+                  "value": "d5168a46-b466-48a8-912f-1212aab5b804"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Trend",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productivity/:agentId/trend?start=&end=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productivity",
+                ":agentId",
+                "trend"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": ""
+                },
+                {
+                  "key": "end",
+                  "value": ""
+                }
+              ],
+              "variable": [
+                {
+                  "key": "agentId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Custom",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productivity/:agentId/custom?start=&end=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productivity",
+                ":agentId",
+                "custom"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": ""
+                },
+                {
+                  "key": "end",
+                  "value": ""
+                }
+              ],
+              "variable": [
+                {
+                  "key": "agentId"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Active Tab",
+      "item": [
+        {
+          "name": "Send Active Tab",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/active-tab",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "active-tab"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Tab",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/active-tab/current",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "active-tab",
+                "current"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9090"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "organizationId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
