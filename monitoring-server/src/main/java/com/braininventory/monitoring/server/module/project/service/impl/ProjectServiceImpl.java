@@ -130,6 +130,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .description(project.getDescription())
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
+                .organizationId(project.getOrganization().getId())
+                .assignedUserIds(project.getAssignedUsers().stream()
+                        .map(User::getId)
+                        .toList())
                 .isActive(project.isActive())
                 .createdAt(project.getCreatedAt())
                 .build();
