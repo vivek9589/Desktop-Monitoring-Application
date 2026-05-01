@@ -58,7 +58,11 @@ public class WebsiteServiceImpl implements WebsiteService {
 
 
     @Override
-    public List<WebsiteUsageDTO> getTopWebsitesByAgents(List<String> agentIds, LocalDate start, LocalDate end) {
+    public List<WebsiteUsageDTO> getTopWebsitesByAgents(
+            List<String> agentIds,
+            LocalDate start,
+            LocalDate end
+    ) {
 
         List<Object[]> results = repository.getTopWebsitesByAgents(
                 agentIds,
@@ -69,8 +73,8 @@ public class WebsiteServiceImpl implements WebsiteService {
         return results.stream()
                 .limit(5)
                 .map(r -> WebsiteUsageDTO.builder()
-                        .url((String) r[0])
-                        .duration(((Number) r[1]).longValue())
+                        .domain((String) r[0])   // ✅ FIXED
+                        .duration(((Number) r[1]).longValue()) // ✅ FIXED
                         .build()
                 )
                 .toList();
