@@ -3,6 +3,7 @@ package com.braininventory.monitoring.server.module.dashboard.controller;
 
 import com.braininventory.monitoring.common.dto.ApiResponse;
 import com.braininventory.monitoring.server.module.dashboard.dto.response.AdminDashboardResponseDTO;
+import com.braininventory.monitoring.server.module.dashboard.dto.response.UserDashboardResponseDTO;
 import com.braininventory.monitoring.server.module.dashboard.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,44 @@ public class DashboardController {
             return ApiResponse.error(
                     "DASHBOARD_ERROR",
                     "Failed to fetch admin dashboard",
+                    ex.getMessage(),
+                    requestId
+            );
+        }
+    }
+
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<UserDashboardResponseDTO> getUserDashboard(
+
+            @PathVariable String userId,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate start,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate end
+    ) {
+
+        String requestId = UUID.randomUUID().toString();
+
+        try {
+
+            if (start == null) start = LocalDate.now();
+            if (end == null) end = LocalDate.now();
+
+            UserDashboardResponseDTO response =
+                    dashboardService.getUserDashboard(userId, start, end);
+
+            return ApiResponse.success(response, requestId);
+
+        } catch (Exception ex) {
+
+            return ApiResponse.error(
+                    "USER_DASHBOARD_ERROR",
+                    "Failed to fetch user dashboard",
                     ex.getMessage(),
                     requestId
             );
