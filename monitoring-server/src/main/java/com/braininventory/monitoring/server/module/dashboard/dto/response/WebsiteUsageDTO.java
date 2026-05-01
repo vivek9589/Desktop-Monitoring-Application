@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class WebsiteUsageDTO {
-    private String url;
+    private String domain;
     private long duration;
 }
