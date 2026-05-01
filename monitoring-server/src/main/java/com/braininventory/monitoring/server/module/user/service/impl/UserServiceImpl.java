@@ -1,5 +1,7 @@
 package com.braininventory.monitoring.server.module.user.service.impl;
 
+import com.braininventory.monitoring.common.dto.ApiResponse;
+import com.braininventory.monitoring.common.exception.UserNotFoundException;
 import com.braininventory.monitoring.server.module.auth.enums.Role;
 import com.braininventory.monitoring.server.module.user.dto.request.UserResponse;
 import com.braininventory.monitoring.server.module.user.entity.User;
@@ -29,6 +31,20 @@ public class UserServiceImpl implements UserService {
                 .map(this::mapToResponse)
                 .toList();
     }
+    @Override
+    public ApiResponse<UserResponse> getUserByEmail(String email, String requestId) {
+        log.info("Fetching user by email: {}", email);
+        return userRepository.findByEmail(email)
+                .map(user -> ApiResponse.success(mapToResponse(user), requestId))
+                .orElseThrow(() -> {
+                    log.warn("User not found for email: {}", email);
+                    return new UserNotFoundException("No user exists with email: " + email);
+                });
+    }
+
+
+
+
 
     private UserResponse mapToResponse(User user) {
         return UserResponse.builder()

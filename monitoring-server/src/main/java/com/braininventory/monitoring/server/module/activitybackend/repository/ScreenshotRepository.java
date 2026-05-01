@@ -9,6 +9,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 
 public interface ScreenshotRepository extends JpaRepository<Screenshot, Long> {
+
     Page<Screenshot> findByAgentIdAndTimestampBetween(
-            String agentId, LocalDateTime start, LocalDateTime end, Pageable pageable);
+            String agentId,
+            String start,
+            String end,
+            Pageable pageable
+    );
 }

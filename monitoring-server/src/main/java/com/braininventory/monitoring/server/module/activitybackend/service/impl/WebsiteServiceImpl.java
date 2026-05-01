@@ -6,10 +6,16 @@ import com.braininventory.monitoring.server.module.activitybackend.entity.Websit
 import com.braininventory.monitoring.server.module.activitybackend.enums.Category;
 import com.braininventory.monitoring.server.module.activitybackend.repository.WebsiteRepository;
 import com.braininventory.monitoring.server.module.activitybackend.service.WebsiteService;
+import com.braininventory.monitoring.server.module.dashboard.dto.response.WebsiteUsageDTO;
 import com.braininventory.monitoring.server.module.util.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service implementation for website usage persistence and classification.
@@ -48,6 +54,26 @@ public class WebsiteServiceImpl implements WebsiteService {
             log.error("Failed to save website usage", ex);
             throw new AgentException("Failed to save website usage: " + ex.getMessage());
         }
+    }
+
+
+    @Override
+    public List<WebsiteUsageDTO> getTopWebsitesByAgents(List<String> agentIds, LocalDate start, LocalDate end) {
+
+        List<Object[]> results = repository.getTopWebsitesByAgents(
+                agentIds,
+                start.atStartOfDay(),
+                end.atTime(LocalTime.MAX)
+        );
+
+        return results.stream()
+                .limit(5)
+                .map(r -> WebsiteUsageDTO.builder()
+                        .url((String) r[0])
+                        .duration(((Number) r[1]).longValue())
+                        .build()
+                )
+                .toList();
     }
 
     private String normalizeDomain(String domain) {

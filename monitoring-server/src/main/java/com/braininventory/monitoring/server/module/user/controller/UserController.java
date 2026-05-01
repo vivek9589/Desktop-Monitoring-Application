@@ -53,4 +53,17 @@ public class UserController {
                 UUID.randomUUID().toString()
         ));
     }
+
+
+
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserByEmail(
+            @PathVariable String email,
+            HttpServletRequest httpRequest) {
+        String requestId = UUID.randomUUID().toString();
+        ApiResponse<UserResponse> response = userService.getUserByEmail(email, requestId);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
