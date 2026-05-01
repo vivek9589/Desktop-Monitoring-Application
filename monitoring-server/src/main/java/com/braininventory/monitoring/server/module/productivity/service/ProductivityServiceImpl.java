@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,5 +87,36 @@ public class ProductivityServiceImpl implements ProductivityService {
         }
 
         return reports;
+    }
+
+
+
+    @Override
+    public ProductivityReportDto getReportByDateRange(
+            String agentId,
+            LocalDate start,
+            LocalDate end
+    ) {
+        // ✅ Safety (avoid NPE + bad ranges)
+        if (start == null) {
+            start = LocalDate.now();
+        }
+        if (end == null) {
+            end = LocalDate.now();
+        }
+
+        if (end.isBefore(start)) {
+            throw new IllegalArgumentException("End date cannot be before start date");
+        }
+
+        // ✅ Reuse existing repository aggregation
+        Object[] result = repository.getReportForRange(
+                agentId,
+                start.atStartOfDay(),
+                end.atTime(LocalTime.MAX)
+        );
+
+        // ✅ Reuse your existing mapper (this already calculates score)
+        return mapToDto(agentId, result);
     }
 }

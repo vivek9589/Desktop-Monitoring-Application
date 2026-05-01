@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://192.168.68.118:9090", // Vivek's URL
+                        "http://192.168.68.116:9090", // Vivek's URL
                         "http://localhost:5173",      // Vite default
                         "http://localhost:3000"       // React default
                 )

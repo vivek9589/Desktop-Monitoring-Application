@@ -79,19 +79,36 @@ public class ScreenshotServiceImpl implements ScreenshotService {
      * @return Page of ScreenshotResponse
      */
     @Override
-    public Page<ScreenshotResponse> getScreenshots(String agentId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<ScreenshotResponse> getScreenshots(
+            String agentId,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable
+    ) {
         log.info("Fetching screenshots for agent: {}", agentId);
 
-        LocalDateTime start = startDate != null ? startDate.atStartOfDay() : LocalDateTime.MIN;
-        LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : LocalDateTime.now();
+        // ✅ convert to STRING (IMPORTANT)
+        String start = startDate != null
+                ? startDate.atStartOfDay().toString()
+                : "0000-01-01T00:00:00";
 
-        Page<Screenshot> screenshots = screenshotRepository.findByAgentIdAndTimestampBetween(agentId, start, end, pageable);
+        String end = endDate != null
+                ? endDate.atTime(LocalTime.MAX).toString()
+                : LocalDateTime.now().toString();
+
+        Page<Screenshot> screenshots =
+                screenshotRepository.findByAgentIdAndTimestampBetween(
+                        agentId,
+                        start,
+                        end,
+                        pageable
+                );
 
         return screenshots.map(s -> ScreenshotResponse.builder()
                 .id(s.getId())
                 .agentId(s.getAgentId())
                 .fileUrl(s.getFilePath())
-                .timestamp(s.getTimestamp())
+                .timestamp(s.getTimestamp()) // still String
                 .createdAt(s.getCreatedAt())
                 .build());
     }

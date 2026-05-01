@@ -51,4 +51,11 @@ public interface ProductivityService {
      * @return List of ProductivityReportDto (one per day)
      */
     List<ProductivityReportDto> getTrendReport(String agentId, LocalDate start, LocalDate end);
+
+    ProductivityReportDto getReportByDateRange(
+            String userId,
+            LocalDate start,
+            LocalDate end
+    );
+
 }
