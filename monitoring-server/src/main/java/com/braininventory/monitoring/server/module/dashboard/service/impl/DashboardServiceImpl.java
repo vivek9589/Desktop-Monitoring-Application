@@ -227,4 +227,143 @@ public class DashboardServiceImpl implements DashboardService {
             throw new RuntimeException("Failed to generate dashboard");
         }
     }
+
+    @Override
+    public UserDashboardResponseDTO getUserDashboard(
+            String userId,
+            LocalDate start,
+            LocalDate end
+    ) {
+
+        log.info("Generating USER dashboard for userId={}", userId);
+
+        try {
+
+            // =========================
+            // 1. PRODUCTIVITY
+            // =========================
+            ProductivityReportDto report =
+                    productivityService.getReportByDateRange(
+                            userId,
+                            start,
+                            end
+                    );
+
+            long idle = report.getIdleTime();
+            long productive =
+                    report.getProductiveAppTime() + report.getProductiveWebTime();
+
+            long total = idle + productive;
+
+            double productivityScore = report.getProductivityScore();
+
+            UserProductivityDTO productivity =
+                    UserProductivityDTO.builder()
+                            .userId(userId)
+                            //.name("Self") // or fetch from userService if needed
+                            .activeTime(productive)
+                            .idleTime(idle)
+                            .productivity(productivityScore)
+                            .build();
+
+            // =========================
+            // 2. TOP APPS
+            // =========================
+            List<AppUsageDTO> topApps =
+                    appUsageService.getTopAppsByAgents(
+                            List.of(userId),
+                            start,
+                            end
+                    );
+
+            // =========================
+            // 3. TOP WEBSITES
+            // =========================
+            List<WebsiteUsageDTO> topWebsites =
+                    webUsageService.getTopWebsitesByAgents(
+                            List.of(userId),
+                            start,
+                            end
+                    );
+
+            // =========================
+            // 4. TREND (USER LEVEL)
+            // =========================
+            List<TrendDTO> trend = new ArrayList<>();
+
+            LocalDate current = start;
+
+            while (!current.isAfter(end)) {
+
+                ProductivityReportDto dailyReport =
+                        productivityService.getReportByDateRange(
+                                userId,
+                                current,
+                                current
+                        );
+
+                trend.add(
+                        TrendDTO.builder()
+                                .date(current.toString())
+                                .avgProductivity(dailyReport.getProductivityScore())
+                                .build()
+                );
+
+                current = current.plusDays(1);
+            }
+
+            // =========================
+            // 5. SCREENSHOTS
+            // =========================
+            Page<ScreenshotResponse> page =
+                    screenshotService.getScreenshots(
+                            userId,
+                            null,
+                            null,
+                            PageRequest.of(0, 20)
+                    );
+
+            List<ScreenshotDTO> screenshots =
+                    page.getContent().stream()
+                            .map(s -> {
+                                try {
+                                    LocalDateTime ts =
+                                            LocalDateTime.parse(s.getTimestamp());
+
+                                    return ScreenshotDTO.builder()
+                                            .url(s.getFileUrl())
+                                            .userId(s.getAgentId())
+                                            .timestamp(ts)
+                                            .build();
+
+                                } catch (Exception e) {
+                                    log.warn("Invalid timestamp for screenshot id={}", s.getId());
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
+                            .filter(s ->
+                                    (start == null || !s.getTimestamp().toLocalDate().isBefore(start)) &&
+                                            (end == null || !s.getTimestamp().toLocalDate().isAfter(end))
+                            )
+                            .sorted(Comparator.comparing(ScreenshotDTO::getTimestamp).reversed())
+                            .limit(5)
+                            .toList();
+
+            // =========================
+            // FINAL RESPONSE
+            // =========================
+            return UserDashboardResponseDTO.builder()
+                    .productivity(productivity)
+                    .trend(trend)
+                    .topApps(topApps)
+                    .topWebsites(topWebsites)
+                    .screenshots(screenshots)
+                    .build();
+
+        } catch (Exception ex) {
+            log.error("User dashboard failed for userId={}", userId, ex);
+            throw new RuntimeException("Failed to generate user dashboard");
+        }
+    }
 }

@@ -6,7 +6,6 @@ import com.braininventory.monitoring.server.module.dashboard.dto.response.Websit
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 public interface WebsiteService {
 
